@@ -8,10 +8,18 @@ interface GameProviderProps {
 
 interface GameContextState {
     board: ITile[][]
+    selectedTilePosition?: {
+        i: number
+        j: number
+    }
 }
 
 type GameContextAction = {
     type: "start-game"
+} | {
+    type: "select-tile"
+    i: number
+    j: number
 }
 // #endregion
 
@@ -87,6 +95,12 @@ function GameReducer(
             return {
                 ...state,
                 board: createNewBoard()
+            }
+        }
+        case "select-tile": {
+            return {
+                ...state,
+                selectedTilePosition: { i: action.i, j: action.j }
             }
         }
         default: {
