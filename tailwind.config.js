@@ -194,5 +194,6 @@ module.exports = {
       },
     },
   },
+  important: "html",
   plugins: [gluestackPlugin],
 };
