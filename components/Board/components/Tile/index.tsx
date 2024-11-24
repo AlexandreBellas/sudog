@@ -1,3 +1,4 @@
+import { ITile } from "@/@types/tile"
 import { Button, ButtonGroup, ButtonText } from "@/components/ui/button"
 import { blockSize } from "@/constants/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
@@ -57,8 +58,5 @@ export default function Tile({
                 </ButtonText>
             </Button>
         </ButtonGroup>
-        // <Box className="border-2 border-black aspect-square">
-        //     <Text className="font-bold">1</Text>
-        // </Box>
     )
 }
