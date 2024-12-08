@@ -1,8 +1,10 @@
+import { IBoard } from "@/@types/board"
 import { IDifficultyLevel } from "@/@types/game"
 import { ITile } from "@/@types/tile"
 import { deepCopy } from "@/utils/deep-copy"
 import { createBoardWithInitialState } from "@/utils/sudoku/create-board-with-initial-state"
 import { isBoardInValidState } from "@/utils/sudoku/is-board-in-valid-state"
+import { isBoardMatchingSolved } from "@/utils/sudoku/is-board-matching-solved"
 import { isTileValueValid } from "@/utils/sudoku/is-tile-value-valid"
 import { solveBoard } from "@/utils/sudoku/solve-board"
 import { createContext, useContext, useReducer } from "react"
@@ -15,6 +17,7 @@ interface GameProviderProps {
 interface GameContextState {
     level: IDifficultyLevel
     board: ITile[][]
+    solvedBoard: ITile[][]
     isBoardStateValid: boolean
     selectedTilePosition?: {
         i: number
@@ -72,12 +75,8 @@ export function useGameDispatch() {
 // #endregion
 
 // #region Util functions
-function createNewBoard(level: IDifficultyLevel, isTest = false): ITile[][] {
-    const board = createBoardWithInitialState(level)
-
-    if (isTest) solveBoard(board)
-
-    return board
+function createNewBoard(level: IDifficultyLevel, isTest = false): IBoard {
+    return createBoardWithInitialState(level)
 }
 // #endregion
 
@@ -87,12 +86,16 @@ export default function GameProvider({
 }: Readonly<GameProviderProps>) {
     const initialState: GameContextState = {
         level: "easy",
-        board: createNewBoard("easy"),
+        board: [],
+        solvedBoard: [],
         isBoardStateValid: true,
         boardHistory: []
     }
 
-    const [state, dispatch] = useReducer(GameReducer, initialState)
+    const [state, dispatch] = useReducer(GameReducer, initialState, (state) => {
+        const { current: board, solved: solvedBoard } = createNewBoard("easy")
+        return { ...state, board, solvedBoard }
+    })
 
     return (
         <GameContext.Provider value={state}>
@@ -111,10 +114,8 @@ function GameReducer(
 ): GameContextState {
     switch (action.type) {
         case "start-game": {
-            return {
-                ...state,
-                board: createNewBoard(action.level ?? state.level)
-            }
+            const { current: board, solved: solvedBoard } = createNewBoard(action.level ?? state.level)
+            return { ...state, board, solvedBoard }
         }
         case "select-tile": {
             return {
@@ -161,7 +162,10 @@ function GameReducer(
                     previousValue: state.board[i][j].value
                 }],
                 board: newBoard,
-                isBoardStateValid: isBoardInValidState(newBoard)
+                isBoardStateValid: isBoardInValidState(newBoard) && isBoardMatchingSolved({
+                    current: newBoard,
+                    solved: state.solvedBoard
+                })
             }
         }
         case "toggle-note-for-selected-tile": {
@@ -186,7 +190,11 @@ function GameReducer(
                     value: newBoard[i][j].notes,
                     previousValue: state.board[i][j].notes
                 }],
-                board: newBoard
+                board: newBoard,
+                isBoardStateValid: isBoardInValidState(newBoard) && isBoardMatchingSolved({
+                    current: newBoard,
+                    solved: state.solvedBoard
+                })
             }
         }
         default: {

@@ -4,11 +4,12 @@ import { blockSize, boardSize } from "@/constants/game";
 import { isBoardInValidState } from "./is-board-in-valid-state";
 import { solveBoard } from "./solve-board";
 import { createNewEmptyBoard } from "./create-new-empty-board";
+import { IBoard } from "@/@types/board";
 
 function generateRandomPosition() {
     return {
-        i: Math.round(Math.random() * blockSize * boardSize),
-        j: Math.round(Math.random() * blockSize * boardSize)
+        i: Math.round(Math.random() * (blockSize * boardSize - 1)),
+        j: Math.round(Math.random() * (blockSize * boardSize - 1))
     }
 }
 
@@ -16,7 +17,7 @@ function generateRandomValue() {
     return Math.round(Math.random() * (blockSize * blockSize - 1)) + 1
 }
 
-export function createBoardWithInitialState(level: IDifficultyLevel): ITile[][] {
+export function createBoardWithInitialState(level: IDifficultyLevel): IBoard {
     let numOfStartingTiles = 0
 
     switch (level) {
@@ -57,7 +58,7 @@ export function createBoardWithInitialState(level: IDifficultyLevel): ITile[][] 
             }
         }
 
-        const { hasBeenSolved } = solveBoard(board)
-        if (hasBeenSolved) return board
+        const { hasBeenSolved, board: solvedBoard } = solveBoard(board)
+        if (hasBeenSolved) return { current: board, solved: solvedBoard }
     }
 }
