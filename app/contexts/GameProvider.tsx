@@ -58,6 +58,9 @@ type GameContextAction =
           value: number
       }
     | {
+          type: "clear-value-for-selected-tile"
+      }
+    | {
           type: "toggle-note-for-selected-tile"
           note: number
       }
@@ -97,7 +100,7 @@ export default function GameProvider({ children }: Readonly<GameProviderProps>) 
     }
 
     const [state, dispatch] = useReducer(GameReducer, initialState, (state) => {
-        const { current: board, solved: solvedBoard } = createNewBoard("easy")
+        const { current: board, solved: solvedBoard } = createNewBoard("easy", true)
         return { ...state, board, solvedBoard }
     })
 
@@ -163,6 +166,25 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                         previousValue: state.board[i][j].value
                     }
                 ],
+                board: newBoard,
+                isBoardStateValid:
+                    isBoardInValidState(newBoard) &&
+                    isBoardMatchingSolved({
+                        current: newBoard,
+                        solved: state.solvedBoard
+                    })
+            }
+        }
+        case "clear-value-for-selected-tile": {
+            if (!state.selectedTilePosition) return state
+
+            const newBoard = deepCopy(state.board)
+            const { i, j } = state.selectedTilePosition
+
+            newBoard[i][j].value = null
+
+            return {
+                ...state,
                 board: newBoard,
                 isBoardStateValid:
                     isBoardInValidState(newBoard) &&

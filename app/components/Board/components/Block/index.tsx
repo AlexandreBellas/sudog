@@ -1,8 +1,8 @@
-import { Grid, GridItem } from "@/components/ui/grid";
-import { blockSize } from "@/constants/game";
-import { useGame } from "@/contexts/GameProvider";
-import { useCallback } from "react";
-import Tile from "../Tile";
+import { Grid, GridItem } from "@/components/ui/grid"
+import { blockSize } from "@/constants/game"
+import { useGame } from "@/contexts/GameProvider"
+import { useCallback } from "react"
+import Tile from "../Tile"
 
 interface IBlockProps {
     iBlock: number
@@ -24,7 +24,10 @@ export default function Block({ iBlock, jBlock }: Readonly<IBlockProps>) {
     // #endregion
 
     return (
-        <Grid className="max-h-max bg-gray-300 gap-0.5" _extra={{ className: "grid-cols-3" }}>
+        <Grid
+            className="max-h-max bg-gray-300 gap-0.5"
+            _extra={{ className: "grid-cols-3" }}
+        >
             {board.map((row, iBoardTile) => {
                 if (!shouldRenderTile(iBoardTile, iBlock)) return null
 
@@ -32,8 +35,15 @@ export default function Block({ iBlock, jBlock }: Readonly<IBlockProps>) {
                     if (!shouldRenderTile(jBoardTile, jBlock)) return null
 
                     return (
-                        <GridItem key={`${iBlock}-${jBlock}-${iBoardTile}-${jBoardTile}`} _extra={{ className: "col-span-1" }}>
-                            <Tile value={tile} i={iBoardTile} j={jBoardTile} />
+                        <GridItem
+                            key={`${iBlock}-${jBlock}-${iBoardTile}-${jBoardTile}`}
+                            _extra={{ className: "col-span-1" }}
+                        >
+                            <Tile
+                                value={tile}
+                                i={iBoardTile}
+                                j={jBoardTile}
+                            />
                         </GridItem>
                     )
                 })

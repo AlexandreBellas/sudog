@@ -10,11 +10,7 @@ interface ITileProps {
     j: number
 }
 
-export default function Tile({
-    value,
-    i,
-    j
-}: Readonly<ITileProps>) {
+export default function Tile({ value, i, j }: Readonly<ITileProps>) {
     // #region Contexts
     const { selectedTilePosition } = useGame()
     const gameDispatch = useGameDispatch()
@@ -29,9 +25,12 @@ export default function Tile({
         [selectedTilePosition, i, j]
     )
     const isOnRowOrColumnOrGridOfSelected = useMemo(
-        () => !!selectedTilePosition && (selectedTilePosition.i === i || selectedTilePosition.j === j || (
-            iBlock === (Math.floor(selectedTilePosition.i / blockSize)) && jBlock === (Math.floor(selectedTilePosition.j / blockSize))
-        )),
+        () =>
+            !!selectedTilePosition &&
+            (selectedTilePosition.i === i ||
+                selectedTilePosition.j === j ||
+                (iBlock === Math.floor(selectedTilePosition.i / blockSize) &&
+                    jBlock === Math.floor(selectedTilePosition.j / blockSize))),
         [selectedTilePosition, i, j, iBlock, jBlock]
     )
     const bgClassName = useMemo(() => {
@@ -51,9 +50,11 @@ export default function Tile({
     return (
         <ButtonGroup className={`${bgClassName ?? "bg-white"} aspect-square justify-center items-center box-content`}>
             <Button onPress={handleSelectTile}>
-                <ButtonText className={`
-                    ${value.value === null ? "invisible" : ""}
-                `}>
+                <ButtonText
+                    className={`
+                        ${value.value === null ? "invisible" : ""}
+                    `}
+                >
                     {value.value ?? "0"}
                 </ButtonText>
             </Button>
