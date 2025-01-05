@@ -25,7 +25,6 @@ export default [
             semi: ["error", "never"],
             "no-else-return": "error",
             "max-len": ["warn", 120],
-            "arrow-body-style": ["error", "as-needed"],
             "react/prop-types": "off",
             "@typescript-eslint/no-empty-function": "off"
         }
