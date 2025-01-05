@@ -1,6 +1,6 @@
-import { ITile } from "@/@types/tile";
-import { bruteForce } from "./solving-algorithms/brute-force";
-import { deepCopy } from "../deep-copy";
+import { ITile } from "@/@types/tile"
+import { deepCopy } from "../deep-copy"
+import { bruteForce } from "./solving-algorithms/brute-force"
 
 export interface ISolveOutput {
     board: ITile[][]

@@ -2,11 +2,11 @@ import { IBoard } from "@/@types/board"
 import { IDifficultyLevel } from "@/@types/game"
 import { ITile } from "@/@types/tile"
 import { deepCopy } from "@/utils/deep-copy"
+import { createBoardTest } from "@/utils/sudoku/create-board-test"
 import { createBoardWithInitialState } from "@/utils/sudoku/create-board-with-initial-state"
 import { isBoardInValidState } from "@/utils/sudoku/is-board-in-valid-state"
 import { isBoardMatchingSolved } from "@/utils/sudoku/is-board-matching-solved"
 import { isTileValueValid } from "@/utils/sudoku/is-tile-value-valid"
-import { solveBoard } from "@/utils/sudoku/solve-board"
 import { createContext, useContext, useReducer } from "react"
 
 // #region Type definitions
@@ -26,42 +26,46 @@ interface GameContextState {
     boardHistory: ({
         i: number
         j: number
-    } & ({
-        type: "value"
-        value: number
-        previousValue: number | null
-    } | {
-        type: "note"
-        value: number[]
-        previousValue: number[]
-    }))[]
+    } & (
+        | {
+              type: "value"
+              value: number
+              previousValue: number | null
+          }
+        | {
+              type: "note"
+              value: number[]
+              previousValue: number[]
+          }
+    ))[]
 }
 
-type GameContextAction = {
-    type: "start-game"
-    level?: IDifficultyLevel
-} | {
-    type: "select-tile"
-    i: number
-    j: number
-} | {
-    type: "undo-last-action"
-} | {
-    type: "set-value-for-selected-tile"
-    value: number
-} | {
-    type: "toggle-note-for-selected-tile"
-    note: number
-}
+type GameContextAction =
+    | {
+          type: "start-game"
+          level?: IDifficultyLevel
+      }
+    | {
+          type: "select-tile"
+          i: number
+          j: number
+      }
+    | {
+          type: "undo-last-action"
+      }
+    | {
+          type: "set-value-for-selected-tile"
+          value: number
+      }
+    | {
+          type: "toggle-note-for-selected-tile"
+          note: number
+      }
 // #endregion
 
 // #region Context definitions
-const GameContext = createContext(
-    {} as GameContextState
-)
-const GameContextDispatch = createContext(
-    {} as React.Dispatch<GameContextAction>
-)
+const GameContext = createContext({} as GameContextState)
+const GameContextDispatch = createContext({} as React.Dispatch<GameContextAction>)
 // #endregion
 
 // #region Hook definitions
@@ -76,14 +80,14 @@ export function useGameDispatch() {
 
 // #region Util functions
 function createNewBoard(level: IDifficultyLevel, isTest = false): IBoard {
+    if (isTest) return createBoardTest(level)
+
     return createBoardWithInitialState(level)
 }
 // #endregion
 
 // #region Provider definition
-export default function GameProvider({
-    children
-}: Readonly<GameProviderProps>) {
+export default function GameProvider({ children }: Readonly<GameProviderProps>) {
     const initialState: GameContextState = {
         level: "easy",
         board: [],
@@ -99,19 +103,14 @@ export default function GameProvider({
 
     return (
         <GameContext.Provider value={state}>
-            <GameContextDispatch.Provider value={dispatch}>
-                {children}
-            </GameContextDispatch.Provider>
+            <GameContextDispatch.Provider value={dispatch}>{children}</GameContextDispatch.Provider>
         </GameContext.Provider>
     )
 }
 // #endregion
 
 // #region Reducer definition
-function GameReducer(
-    state: GameContextState,
-    action: GameContextAction
-): GameContextState {
+function GameReducer(state: GameContextState, action: GameContextAction): GameContextState {
     switch (action.type) {
         case "start-game": {
             const { current: board, solved: solvedBoard } = createNewBoard(action.level ?? state.level)
@@ -154,18 +153,23 @@ function GameReducer(
 
             return {
                 ...state,
-                boardHistory: [...state.boardHistory, {
-                    i,
-                    j,
-                    type: "value",
-                    value: action.value,
-                    previousValue: state.board[i][j].value
-                }],
+                boardHistory: [
+                    ...state.boardHistory,
+                    {
+                        i,
+                        j,
+                        type: "value",
+                        value: action.value,
+                        previousValue: state.board[i][j].value
+                    }
+                ],
                 board: newBoard,
-                isBoardStateValid: isBoardInValidState(newBoard) && isBoardMatchingSolved({
-                    current: newBoard,
-                    solved: state.solvedBoard
-                })
+                isBoardStateValid:
+                    isBoardInValidState(newBoard) &&
+                    isBoardMatchingSolved({
+                        current: newBoard,
+                        solved: state.solvedBoard
+                    })
             }
         }
         case "toggle-note-for-selected-tile": {
@@ -174,7 +178,7 @@ function GameReducer(
             const newBoard = deepCopy(state.board)
             const { i, j } = state.selectedTilePosition
 
-            const noteIdx = newBoard[i][j].notes.findIndex(n => n === action.note)
+            const noteIdx = newBoard[i][j].notes.findIndex((n) => n === action.note)
             if (noteIdx !== -1) {
                 newBoard[i][j].notes.splice(noteIdx, 1)
             } else {
@@ -183,18 +187,23 @@ function GameReducer(
 
             return {
                 ...state,
-                boardHistory: [...state.boardHistory, {
-                    i,
-                    j,
-                    type: "note",
-                    value: newBoard[i][j].notes,
-                    previousValue: state.board[i][j].notes
-                }],
+                boardHistory: [
+                    ...state.boardHistory,
+                    {
+                        i,
+                        j,
+                        type: "note",
+                        value: newBoard[i][j].notes,
+                        previousValue: state.board[i][j].notes
+                    }
+                ],
                 board: newBoard,
-                isBoardStateValid: isBoardInValidState(newBoard) && isBoardMatchingSolved({
-                    current: newBoard,
-                    solved: state.solvedBoard
-                })
+                isBoardStateValid:
+                    isBoardInValidState(newBoard) &&
+                    isBoardMatchingSolved({
+                        current: newBoard,
+                        solved: state.solvedBoard
+                    })
             }
         }
         default: {

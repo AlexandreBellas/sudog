@@ -1,17 +1,17 @@
+import { ITile } from "@/@types/tile"
 import { blockSize, boardSize } from "@/constants/game"
 import { doesArrayHasDuplicates } from "../array/does-array-has-duplicates"
 import { transposeArray } from "../array/transpose-array"
-import { ITile } from "@/@types/tile"
 
 export function isBoardInValidState(board: ITile[][]): boolean {
     // Check all rows
     for (const row of board) {
-        if (doesArrayHasDuplicates(row.filter(i => i.value !== null))) return false
+        if (doesArrayHasDuplicates(row.filter((i) => i.value !== null))) return false
     }
 
     // Check all columns
     for (const col of transposeArray(board)) {
-        if (doesArrayHasDuplicates(col.filter(i => i.value !== null))) return false
+        if (doesArrayHasDuplicates(col.filter((i) => i.value !== null))) return false
     }
 
     // Check all blocks
@@ -19,10 +19,10 @@ export function isBoardInValidState(board: ITile[][]): boolean {
         for (let jBlock = 0; jBlock < boardSize; jBlock++) {
             const tiles = board
                 .slice(iBlock * boardSize, (iBlock + 1) * blockSize) // rows
-                .map(row => row.slice(jBlock * boardSize, (jBlock + 1) * blockSize)) // columns
+                .map((row) => row.slice(jBlock * boardSize, (jBlock + 1) * blockSize)) // columns
                 .flat()
 
-            if (doesArrayHasDuplicates(tiles.filter(i => i.value !== null))) return false
+            if (doesArrayHasDuplicates(tiles.filter((i) => i.value !== null))) return false
         }
     }
 

@@ -1,8 +1,8 @@
-import { ITile } from "@/@types/tile";
-import { blockSize, boardSize } from "@/constants/game";
-import { isBoardInValidState } from "../is-board-in-valid-state";
-import { deepCopy } from "@/utils/deep-copy";
-import { ISolveOutput } from "../solve-board";
+import { ITile } from "@/@types/tile"
+import { blockSize, boardSize } from "@/constants/game"
+import { deepCopy } from "@/utils/deep-copy"
+import { isBoardInValidState } from "../is-board-in-valid-state"
+import { ISolveOutput } from "../solve-board"
 
 export function bruteForce(originalBoard: ITile[][], iStart = 0, jStart = 0): ISolveOutput {
     const board = deepCopy(originalBoard)
