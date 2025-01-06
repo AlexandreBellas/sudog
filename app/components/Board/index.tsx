@@ -1,13 +1,23 @@
 import { blockSize, boardSize } from "@/constants/game"
-import { useGameDispatch } from "@/contexts/GameProvider"
-import { useEffect } from "react"
+import { useGame, useGameDispatch } from "@/contexts/GameProvider"
+import { Pencil, PencilOff } from "lucide-react-native"
+import { useCallback, useEffect } from "react"
 import { Box } from "../ui/box"
+import { Button, ButtonIcon, ButtonText } from "../ui/button"
 import { Grid, GridItem } from "../ui/grid"
+import { HStack } from "../ui/hstack"
 import Block from "./components/Block"
 
 export default function Board() {
     // #region Contexts
+    const { isAddingNotes } = useGame()
     const gameDispatch = useGameDispatch()
+    // #endregion
+
+    // #region Callbacks
+    const handleToggleNotesMode = useCallback(() => {
+        gameDispatch({ type: "toggle-notes-mode" })
+    }, [gameDispatch])
     // #endregion
 
     // #region Effects
@@ -16,6 +26,10 @@ export default function Board() {
             const key = event.key
             if (!isNaN(Number(key)) && key >= "1" && key <= "9") {
                 gameDispatch({ type: "set-value-for-selected-tile", value: parseInt(key) })
+            }
+
+            if (event.key === "Backspace") {
+                gameDispatch({ type: "clear-value-for-selected-tile" })
             }
         }
 
@@ -46,6 +60,19 @@ export default function Board() {
                     ))
                 )}
             </Grid>
+            <HStack className="py-2">
+                <Button
+                    size="lg"
+                    onPress={handleToggleNotesMode}
+                    className="flex flex-col"
+                >
+                    <ButtonIcon
+                        as={isAddingNotes ? Pencil : PencilOff}
+                        size="lg"
+                    />
+                    <ButtonText size="sm">{isAddingNotes ? "Notes ON" : "Notes OFF"}</ButtonText>
+                </Button>
+            </HStack>
         </Box>
     )
 }

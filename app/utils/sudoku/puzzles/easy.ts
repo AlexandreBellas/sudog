@@ -1,108 +1,112 @@
 import { IBoard } from "@/@types/board"
+import { IPlayableTile } from "@/@types/tile"
 import { solveBoard } from "../solve-board"
 
-const easyInitialState = [
+const easyInitialState: IPlayableTile[][] = [
     [
-        { value: 6, notes: [] },
-        { value: null, notes: [] },
-        { value: 4, notes: [] },
-        { value: 8, notes: [] },
-        { value: null, notes: [] },
-        { value: 9, notes: [] },
-        { value: null, notes: [] },
-        { value: 5, notes: [] },
-        { value: 1, notes: [] }
+        { value: 6, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 4, notes: [], isClue: true },
+        { value: 8, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 9, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 5, notes: [], isClue: true },
+        { value: 1, notes: [], isClue: true }
     ],
     [
-        { value: 9, notes: [] },
-        { value: null, notes: [] },
-        { value: 7, notes: [] },
-        { value: null, notes: [] },
-        { value: 3, notes: [] },
-        { value: null, notes: [] },
-        { value: 4, notes: [] },
-        { value: null, notes: [] },
-        { value: 2, notes: [] }
+        { value: 9, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 7, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 3, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 4, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 2, notes: [], isClue: true }
     ],
     [
-        { value: 5, notes: [] },
-        { value: 1, notes: [] },
-        { value: null, notes: [] },
-        { value: null, notes: [] },
-        { value: null, notes: [] },
-        { value: 6, notes: [] },
-        { value: null, notes: [] },
-        { value: 9, notes: [] },
-        { value: null, notes: [] }
+        { value: 5, notes: [], isClue: true },
+        { value: 1, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: null, notes: [], isClue: false },
+        { value: null, notes: [], isClue: false },
+        { value: 6, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 9, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false }
     ],
     [
-        { value: 1, notes: [] },
-        { value: null, notes: [] },
-        { value: 2, notes: [] },
-        { value: 6, notes: [] },
-        { value: null, notes: [] },
-        { value: 4, notes: [] },
-        { value: 8, notes: [] },
-        { value: null, notes: [] },
-        { value: null, notes: [] }
+        { value: 1, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 2, notes: [], isClue: true },
+        { value: 6, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 4, notes: [], isClue: true },
+        { value: 8, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: null, notes: [], isClue: false }
     ],
     [
-        { value: 7, notes: [] },
-        { value: 9, notes: [] },
-        { value: null, notes: [] },
-        { value: null, notes: [] },
-        { value: 2, notes: [] },
-        { value: 1, notes: [] },
-        { value: 5, notes: [] },
-        { value: 4, notes: [] },
-        { value: null, notes: [] }
+        { value: 7, notes: [], isClue: true },
+        { value: 9, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: null, notes: [], isClue: false },
+        { value: 2, notes: [], isClue: true },
+        { value: 1, notes: [], isClue: true },
+        { value: 5, notes: [], isClue: true },
+        { value: 4, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false }
     ],
     [
-        { value: 4, notes: [] },
-        { value: 6, notes: [] },
-        { value: 5, notes: [] },
-        { value: 9, notes: [] },
-        { value: 8, notes: [] },
-        { value: null, notes: [] },
-        { value: 2, notes: [] },
-        { value: 1, notes: [] },
-        { value: null, notes: [] }
+        { value: 4, notes: [], isClue: true },
+        { value: 6, notes: [], isClue: true },
+        { value: 5, notes: [], isClue: true },
+        { value: 9, notes: [], isClue: true },
+        { value: 8, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 2, notes: [], isClue: true },
+        { value: 1, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false }
     ],
     [
-        { value: null, notes: [] },
-        { value: null, notes: [] },
-        { value: 6, notes: [] },
-        { value: null, notes: [] },
-        { value: null, notes: [] },
-        { value: 8, notes: [] },
-        { value: 1, notes: [] },
-        { value: 2, notes: [] },
-        { value: null, notes: [] }
+        { value: null, notes: [], isClue: false },
+        { value: null, notes: [], isClue: false },
+        { value: 6, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: null, notes: [], isClue: false },
+        { value: 8, notes: [], isClue: true },
+        { value: 1, notes: [], isClue: true },
+        { value: 2, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false }
     ],
     [
-        { value: null, notes: [] },
-        { value: 7, notes: [] },
-        { value: 9, notes: [] },
-        { value: null, notes: [] },
-        { value: 1, notes: [] },
-        { value: null, notes: [] },
-        { value: null, notes: [] },
-        { value: 3, notes: [] },
-        { value: 5, notes: [] }
+        { value: null, notes: [], isClue: false },
+        { value: 7, notes: [], isClue: true },
+        { value: 9, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: 1, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: null, notes: [], isClue: false },
+        { value: 3, notes: [], isClue: true },
+        { value: 5, notes: [], isClue: true }
     ],
     [
-        { value: 2, notes: [] },
-        { value: 4, notes: [] },
-        { value: 1, notes: [] },
-        { value: 5, notes: [] },
-        { value: 6, notes: [] },
-        { value: null, notes: [] },
-        { value: null, notes: [] },
-        { value: 8, notes: [] },
-        { value: 7, notes: [] }
+        { value: 2, notes: [], isClue: true },
+        { value: 4, notes: [], isClue: true },
+        { value: 1, notes: [], isClue: true },
+        { value: 5, notes: [], isClue: true },
+        { value: 6, notes: [], isClue: true },
+        { value: null, notes: [], isClue: false },
+        { value: null, notes: [], isClue: false },
+        { value: 8, notes: [], isClue: true },
+        { value: 7, notes: [], isClue: true }
     ]
 ]
+
+const easySolvedBoard = solveBoard(easyInitialState)
+
 export const easySolvedPuzzle: IBoard = {
     current: easyInitialState,
-    solved: solveBoard(easyInitialState).board
+    solved: easySolvedBoard.hasBeenSolved ? easySolvedBoard.board : []
 }

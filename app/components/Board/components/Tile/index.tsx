@@ -1,16 +1,17 @@
-import { ITile } from "@/@types/tile"
+import { IPlayableTile } from "@/@types/tile"
 import { Button, ButtonGroup, ButtonText } from "@/components/ui/button"
 import { blockSize } from "@/constants/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
 import { useCallback, useMemo } from "react"
 
 interface ITileProps {
-    value: ITile
+    correctValue: number
+    value: IPlayableTile
     i: number
     j: number
 }
 
-export default function Tile({ value, i, j }: Readonly<ITileProps>) {
+export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>) {
     // #region Contexts
     const { selectedTilePosition } = useGame()
     const gameDispatch = useGameDispatch()
@@ -34,11 +35,13 @@ export default function Tile({ value, i, j }: Readonly<ITileProps>) {
         [selectedTilePosition, i, j, iBlock, jBlock]
     )
     const bgClassName = useMemo(() => {
-        if (isSelected) return "bg-green-300"
-        if (isOnRowOrColumnOrGridOfSelected) return "bg-green-100"
+        if (isSelected) return "bg-blue-300"
+        if (isOnRowOrColumnOrGridOfSelected) return "bg-blue-100"
 
         return null
     }, [isSelected, isOnRowOrColumnOrGridOfSelected])
+
+    const isCorrect = useMemo(() => value.value === correctValue, [value.value, correctValue])
     // #endregion
 
     // #region Callbacks
@@ -49,11 +52,20 @@ export default function Tile({ value, i, j }: Readonly<ITileProps>) {
 
     return (
         <ButtonGroup className={`${bgClassName ?? "bg-white"} aspect-square justify-center items-center box-content`}>
-            <Button onPress={handleSelectTile}>
+            <Button
+                onPress={handleSelectTile}
+                className="justify-center items-center"
+                data-hover={false}
+                isHovered={false}
+            >
                 <ButtonText
                     className={`
                         ${value.value === null ? "invisible" : ""}
+                        ${value.isClue ? "text-2xl font-bold text-gray-600" : "text-3xl font-medium text-gray-800"}
+                        ${!isCorrect ? "text-red-500 enabled:hover:text-red-500" : ""}
                     `}
+                    size={value.isClue ? "md" : "sm"}
+                    data-hover={false}
                 >
                     {value.value ?? "0"}
                 </ButtonText>

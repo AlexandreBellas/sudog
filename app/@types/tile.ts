@@ -1,6 +1,10 @@
-export interface ITile {
-    value: number | null
+export interface ITile<TValue extends number | null = number | null> {
+    value: TValue
+}
+
+export interface IPlayableTile<TValue extends number | null = number | null> extends ITile<TValue> {
     notes: number[]
+    isClue: boolean
 }
 
 export function isTile(tile: unknown): tile is ITile {

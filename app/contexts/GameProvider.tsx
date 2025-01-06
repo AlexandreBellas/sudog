@@ -1,11 +1,9 @@
 import { IBoard } from "@/@types/board"
 import { IDifficultyLevel } from "@/@types/game"
-import { ITile } from "@/@types/tile"
+import { IPlayableTile, ITile } from "@/@types/tile"
 import { deepCopy } from "@/utils/deep-copy"
 import { createBoardTest } from "@/utils/sudoku/create-board-test"
 import { createBoardWithInitialState } from "@/utils/sudoku/create-board-with-initial-state"
-import { isBoardInValidState } from "@/utils/sudoku/is-board-in-valid-state"
-import { isBoardMatchingSolved } from "@/utils/sudoku/is-board-matching-solved"
 import { isTileValueValid } from "@/utils/sudoku/is-tile-value-valid"
 import { createContext, useContext, useReducer } from "react"
 
@@ -16,13 +14,13 @@ interface GameProviderProps {
 
 interface GameContextState {
     level: IDifficultyLevel
-    board: ITile[][]
-    solvedBoard: ITile[][]
-    isBoardStateValid: boolean
+    board: IPlayableTile[][]
+    solvedBoard: ITile<number>[][]
     selectedTilePosition?: {
         i: number
         j: number
     }
+    isAddingNotes: boolean
     boardHistory: ({
         i: number
         j: number
@@ -64,6 +62,12 @@ type GameContextAction =
           type: "toggle-note-for-selected-tile"
           note: number
       }
+    | {
+          type: "clear-all-notes-for-selected-tile"
+      }
+    | {
+          type: "toggle-notes-mode"
+      }
 // #endregion
 
 // #region Context definitions
@@ -95,8 +99,8 @@ export default function GameProvider({ children }: Readonly<GameProviderProps>) 
         level: "easy",
         board: [],
         solvedBoard: [],
-        isBoardStateValid: true,
-        boardHistory: []
+        boardHistory: [],
+        isAddingNotes: false
     }
 
     const [state, dispatch] = useReducer(GameReducer, initialState, (state) => {
@@ -140,11 +144,7 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                 newBoard[lastStep.i][lastStep.j].notes = lastStep.previousValue
             }
 
-            return {
-                ...state,
-                board: newBoard,
-                boardHistory: newHistory
-            }
+            return { ...state, board: newBoard, boardHistory: newHistory }
         }
         case "set-value-for-selected-tile": {
             if (!state.selectedTilePosition || !isTileValueValid(action.value)) return state
@@ -166,33 +166,19 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                         previousValue: state.board[i][j].value
                     }
                 ],
-                board: newBoard,
-                isBoardStateValid:
-                    isBoardInValidState(newBoard) &&
-                    isBoardMatchingSolved({
-                        current: newBoard,
-                        solved: state.solvedBoard
-                    })
+                board: newBoard
             }
         }
         case "clear-value-for-selected-tile": {
             if (!state.selectedTilePosition) return state
+            if (state.board[state.selectedTilePosition.i][state.selectedTilePosition.j].isClue) return state
 
             const newBoard = deepCopy(state.board)
             const { i, j } = state.selectedTilePosition
 
             newBoard[i][j].value = null
 
-            return {
-                ...state,
-                board: newBoard,
-                isBoardStateValid:
-                    isBoardInValidState(newBoard) &&
-                    isBoardMatchingSolved({
-                        current: newBoard,
-                        solved: state.solvedBoard
-                    })
-            }
+            return { ...state, board: newBoard }
         }
         case "toggle-note-for-selected-tile": {
             if (!state.selectedTilePosition || !isTileValueValid(action.note)) return state
@@ -219,14 +205,21 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                         previousValue: state.board[i][j].notes
                     }
                 ],
-                board: newBoard,
-                isBoardStateValid:
-                    isBoardInValidState(newBoard) &&
-                    isBoardMatchingSolved({
-                        current: newBoard,
-                        solved: state.solvedBoard
-                    })
+                board: newBoard
             }
+        }
+        case "clear-all-notes-for-selected-tile": {
+            if (!state.selectedTilePosition) return state
+
+            const newBoard = deepCopy(state.board)
+            const { i, j } = state.selectedTilePosition
+
+            newBoard[i][j].notes = []
+
+            return { ...state, board: newBoard }
+        }
+        case "toggle-notes-mode": {
+            return { ...state, isAddingNotes: !state.isAddingNotes }
         }
         default: {
             return state

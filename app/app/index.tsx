@@ -5,10 +5,10 @@ import "@/global.css"
 
 export default function Index() {
     return (
-        <GameProvider>
-            <Box className="flex flex-row flex-1 p-5 justify-center">
+        <Box className="flex flex-row flex-1 p-5 justify-center">
+            <GameProvider>
                 <Board />
-            </Box>
-        </GameProvider>
+            </GameProvider>
+        </Box>
     )
 }

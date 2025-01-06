@@ -11,7 +11,7 @@ interface IBlockProps {
 
 export default function Block({ iBlock, jBlock }: Readonly<IBlockProps>) {
     // #region Contexts
-    const { board } = useGame()
+    const { board, solvedBoard } = useGame()
     // #endregion
 
     // #region Callbacks
@@ -40,6 +40,7 @@ export default function Block({ iBlock, jBlock }: Readonly<IBlockProps>) {
                             _extra={{ className: "col-span-1" }}
                         >
                             <Tile
+                                correctValue={solvedBoard[iBoardTile][jBoardTile].value!}
                                 value={tile}
                                 i={iBoardTile}
                                 j={jBoardTile}

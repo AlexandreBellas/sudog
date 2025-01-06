@@ -1,6 +1,6 @@
-import { ITile } from "./tile"
+import { IPlayableTile, ITile } from "./tile"
 
 export interface IBoard {
-    current: ITile[][]
-    solved: ITile[][]
+    current: IPlayableTile[][]
+    solved: ITile<number>[][]
 }

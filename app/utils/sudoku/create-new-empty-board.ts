@@ -1,13 +1,13 @@
-import { ITile } from "@/@types/tile"
+import { IPlayableTile } from "@/@types/tile"
 import { blockSize, boardSize } from "@/constants/game"
 
-export function createNewEmptyBoard(): ITile[][] {
-    const board: ITile[][] = []
+export function createNewEmptyBoard(): IPlayableTile[][] {
+    const board: IPlayableTile[][] = []
 
     for (let i = 0; i < boardSize * blockSize; i++) {
-        const row: ITile[] = []
+        const row: IPlayableTile[] = []
         for (let j = 0; j < boardSize * blockSize; j++) {
-            row.push({ value: null, notes: [] })
+            row.push({ value: null, notes: [], isClue: false })
         }
 
         board.push(row)

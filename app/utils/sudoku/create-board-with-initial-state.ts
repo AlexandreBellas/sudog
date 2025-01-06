@@ -1,10 +1,9 @@
-import { IDifficultyLevel } from "@/@types/game";
-import { ITile } from "@/@types/tile";
-import { blockSize, boardSize } from "@/constants/game";
-import { isBoardInValidState } from "./is-board-in-valid-state";
-import { solveBoard } from "./solve-board";
-import { createNewEmptyBoard } from "./create-new-empty-board";
-import { IBoard } from "@/@types/board";
+import { IBoard } from "@/@types/board"
+import { IDifficultyLevel } from "@/@types/game"
+import { blockSize, boardSize } from "@/constants/game"
+import { createNewEmptyBoard } from "./create-new-empty-board"
+import { isBoardInValidState } from "./is-board-in-valid-state"
+import { solveBoard } from "./solve-board"
 
 function generateRandomPosition() {
     return {
@@ -52,8 +51,10 @@ export function createBoardWithInitialState(level: IDifficultyLevel): IBoard {
                 if (board[i][j].value === null) {
                     board[i][j].value = generateRandomValue()
 
-                    if (isBoardInValidState(board)) hasBeenInserted = true
-                    else board[i][j].value = null
+                    if (isBoardInValidState(board)) {
+                        hasBeenInserted = true
+                        board[i][j].isClue = true
+                    } else board[i][j].value = null
                 }
             }
         }
