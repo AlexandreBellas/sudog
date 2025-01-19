@@ -28,7 +28,7 @@ export default function Board() {
     }, [gameDispatch])
 
     const handleRestartBoard = useCallback(() => {
-        if (confirm("Are you sure you want to restart? Your current progress will be lost.")) {
+        if (confirm("Are you sure you want to restart? Your current progress will be lost. 🦴")) {
             gameDispatch({ type: "start-game" })
         }
     }, [gameDispatch])
