@@ -1,6 +1,7 @@
 import { IBoard } from "@/@types/board"
 import { IDifficultyLevel } from "@/@types/game"
 import { IPlayableTile, ITile } from "@/@types/tile"
+import { blockSize, boardSize } from "@/constants/game"
 import { useBoardService } from "@/hooks/services/useBoardService"
 import { deepCopy } from "@/utils/deep-copy"
 import { createBoardTest } from "@/utils/sudoku/create-board-test"
@@ -197,6 +198,26 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                 }
             } else {
                 newBoard[i][j].value = action.value
+
+                // Clear relevant notes
+                if (state.solvedBoard[i][j].value === action.value) {
+                    for (let k = 0; k < blockSize * boardSize; k++) {
+                        // Same row
+                        newBoard[k][j].notes = newBoard[k][j].notes.filter((n) => n !== action.value)
+                        // Same column
+                        newBoard[i][k].notes = newBoard[i][k].notes.filter((n) => n !== action.value)
+                    }
+
+                    // Same block
+                    const blockIShift = Math.floor(i / blockSize) * blockSize
+                    const blockJShift = Math.floor(j / blockSize) * blockSize
+                    for (let k = 0; k < blockSize; k++) {
+                        for (let l = 0; l < blockSize; l++) {
+                            const tile = newBoard[blockIShift + k][blockJShift + l]
+                            tile.notes = tile.notes.filter((n) => n !== action.value)
+                        }
+                    }
+                }
             }
 
             return {
