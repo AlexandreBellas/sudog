@@ -40,7 +40,7 @@ export default function Block({ iBlock, jBlock }: Readonly<IBlockProps>) {
                             _extra={{ className: "col-span-1" }}
                         >
                             <Tile
-                                correctValue={solvedBoard[iBoardTile][jBoardTile].value!}
+                                correctValue={solvedBoard[iBoardTile][jBoardTile].value}
                                 value={tile}
                                 i={iBoardTile}
                                 j={jBoardTile}

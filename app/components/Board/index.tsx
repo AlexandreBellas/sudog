@@ -1,6 +1,6 @@
 import { blockSize, boardSize } from "@/constants/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
-import { Pencil, PencilOff } from "lucide-react-native"
+import { Eraser, Pencil, PencilOff } from "lucide-react-native"
 import { useCallback, useEffect } from "react"
 import { Box } from "../ui/box"
 import { Button, ButtonIcon, ButtonText } from "../ui/button"
@@ -18,6 +18,10 @@ export default function Board() {
     const handleToggleNotesMode = useCallback(() => {
         gameDispatch({ type: "toggle-notes-mode" })
     }, [gameDispatch])
+
+    const handleClearSelectedTile = useCallback(() => {
+        gameDispatch({ type: "clear-value-for-selected-tile" })
+    }, [gameDispatch])
     // #endregion
 
     // #region Effects
@@ -29,14 +33,14 @@ export default function Board() {
             }
 
             if (event.key === "Backspace") {
-                gameDispatch({ type: "clear-value-for-selected-tile" })
+                handleClearSelectedTile()
             }
         }
 
         window.addEventListener("keydown", handleKeyPress)
 
         return () => window.removeEventListener("keydown", handleKeyPress)
-    }, [gameDispatch])
+    }, [handleClearSelectedTile, gameDispatch])
     // #endregion
 
     return (
@@ -60,7 +64,7 @@ export default function Board() {
                     ))
                 )}
             </Grid>
-            <HStack className="py-2">
+            <HStack className="py-2 justify-center">
                 <Button
                     size="lg"
                     onPress={handleToggleNotesMode}
@@ -71,6 +75,17 @@ export default function Board() {
                         size="lg"
                     />
                     <ButtonText size="sm">{isAddingNotes ? "Notes ON" : "Notes OFF"}</ButtonText>
+                </Button>
+                <Button
+                    size="lg"
+                    onPress={handleClearSelectedTile}
+                    className="flex flex-col"
+                >
+                    <ButtonIcon
+                        as={Eraser}
+                        size="lg"
+                    />
+                    <ButtonText size="sm">Clear</ButtonText>
                 </Button>
             </HStack>
         </Box>
