@@ -11,7 +11,8 @@
     "tailwind:watch": "npx tailwindcss --watch -i ./global.css -o ./output.css",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "export:web": "expo export --platform web"
   },
   "jest": {
     "preset": "jest-expo"

@@ -653,6 +653,10 @@ html .h-\[18px\] {
   height: 18px;
 }
 
+html .h-full {
+  height: 100%;
+}
+
 html .max-h-max {
   max-height: -moz-max-content;
   max-height: max-content;
@@ -46524,16 +46528,8 @@ html .p-0 {
   padding: 0px;
 }
 
-html .p-3 {
-  padding: 0.75rem;
-}
-
 html .p-5 {
   padding: 1.25rem;
-}
-
-html .p-2 {
-  padding: 0.5rem;
 }
 
 html .px-0 {
@@ -58145,6 +58141,16 @@ html .text-warning-950\/95 {
   color: rgb(var(--color-warning-950)/0.95);
 }
 
+html .text-gray-900 {
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity, 1));
+}
+
+html .text-gray-950 {
+  --tw-text-opacity: 1;
+  color: rgb(3 7 18 / var(--tw-text-opacity, 1));
+}
+
 html .underline {
   text-decoration-line: underline;
 }
@@ -58159,11 +58165,6 @@ html .no-underline {
 
 html .outline {
   outline-style: solid;
-}
-
-html .hover\:text-red-500:hover {
-  --tw-text-opacity: 1;
-  color: rgb(239 68 68 / var(--tw-text-opacity, 1));
 }
 
 html .enabled\:hover\:text-red-500:hover:enabled {
