@@ -1,5 +1,5 @@
 {
-  "cSpell.words": ["Gluestack", "Sudog"],
+  "cSpell.words": ["Gluestack", "nativewind", "Sudog"],
   "tailwindCSS.experimental.classRegex": [
     ["tva\\((([^()]*|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
   ],
