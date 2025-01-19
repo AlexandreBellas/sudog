@@ -8,7 +8,7 @@ interface ITileNotesProps {
 
 export default function TileNotes({ notes }: Readonly<ITileNotesProps>) {
     return (
-        <Box className="absolute inset-0 md:p-1 pointer-events-none">
+        <Box className="absolute inset-0 sm:p-1 pointer-events-none">
             <Box className="relative h-full">
                 {Array.from({ length: blockSize * blockSize })
                     .map((_, i) => i + 1)

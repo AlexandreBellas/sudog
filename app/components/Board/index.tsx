@@ -5,7 +5,6 @@ import { useCallback, useEffect } from "react"
 import { Box } from "../ui/box"
 import { Button, ButtonIcon, ButtonText } from "../ui/button"
 import { Grid, GridItem } from "../ui/grid"
-import { HStack } from "../ui/hstack"
 import Block from "./components/Block"
 
 export default function Board() {
@@ -74,11 +73,11 @@ export default function Board() {
                     ))
                 )}
             </Grid>
-            <HStack className="py-2 justify-center">
+            <Box className="flex flex-row py-2 justify-center">
                 <Button
                     size="lg"
                     onPress={handleUndoAction}
-                    className="flex flex-col"
+                    className="flex flex-col px-2"
                 >
                     <ButtonIcon
                         as={Undo}
@@ -89,7 +88,7 @@ export default function Board() {
                 <Button
                     size="lg"
                     onPress={handleClearSelectedTile}
-                    className="flex flex-col"
+                    className="flex flex-col px-2"
                 >
                     <ButtonIcon
                         as={Eraser}
@@ -100,7 +99,7 @@ export default function Board() {
                 <Button
                     size="lg"
                     onPress={handleToggleNotesMode}
-                    className="flex flex-col"
+                    className="flex flex-col px-2"
                 >
                     <ButtonIcon
                         as={isAddingNotes ? Pencil : PencilOff}
@@ -111,7 +110,7 @@ export default function Board() {
                 <Button
                     size="lg"
                     onPress={handleRestartBoard}
-                    className="flex flex-col"
+                    className="flex flex-col px-2"
                 >
                     <ButtonIcon
                         as={RefreshCcw}
@@ -119,7 +118,7 @@ export default function Board() {
                     />
                     <ButtonText size="sm">Restart</ButtonText>
                 </Button>
-            </HStack>
+            </Box>
         </Box>
     )
 }

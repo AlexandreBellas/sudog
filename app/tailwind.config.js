@@ -192,6 +192,9 @@ export const theme = {
             "soft-2": "0px 0px 20px rgba(38, 38, 38, 0.2)",
             "soft-3": "0px 0px 30px rgba(38, 38, 38, 0.1)",
             "soft-4": "0px 0px 40px rgba(38, 38, 38, 0.1)"
+        },
+        screens: {
+            xs: "480px"
         }
     }
 }

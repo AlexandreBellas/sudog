@@ -22,9 +22,9 @@ export default function VirtualKeyboard() {
                 <Button
                     key={number}
                     onPress={() => handlePlaceNumberForSelectedTile(number)}
-                    className="bg-blue-100 text-blue-500 px-2 md:aspect-square"
+                    className="bg-blue-100 text-blue-500 px-2 sm:aspect-square"
                 >
-                    <ButtonText className="text-lg font-normal md:text-xl">{number}</ButtonText>
+                    <ButtonText className="text-lg font-normal sm:text-xl">{number}</ButtonText>
                 </Button>
             ))}
         </div>
