@@ -1,6 +1,6 @@
 import { blockSize, boardSize } from "@/constants/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
-import { Eraser, Pencil, PencilOff } from "lucide-react-native"
+import { Eraser, Pencil, PencilOff, Undo } from "lucide-react-native"
 import { useCallback, useEffect } from "react"
 import { Box } from "../ui/box"
 import { Button, ButtonIcon, ButtonText } from "../ui/button"
@@ -21,6 +21,10 @@ export default function Board() {
 
     const handleClearSelectedTile = useCallback(() => {
         gameDispatch({ type: "clear-value-for-selected-tile" })
+    }, [gameDispatch])
+
+    const handleUndoAction = useCallback(() => {
+        gameDispatch({ type: "undo-last-action" })
     }, [gameDispatch])
     // #endregion
 
@@ -67,14 +71,14 @@ export default function Board() {
             <HStack className="py-2 justify-center">
                 <Button
                     size="lg"
-                    onPress={handleToggleNotesMode}
+                    onPress={handleUndoAction}
                     className="flex flex-col"
                 >
                     <ButtonIcon
-                        as={isAddingNotes ? Pencil : PencilOff}
+                        as={Undo}
                         size="lg"
                     />
-                    <ButtonText size="sm">{isAddingNotes ? "Notes ON" : "Notes OFF"}</ButtonText>
+                    <ButtonText size="sm">Undo</ButtonText>
                 </Button>
                 <Button
                     size="lg"
@@ -86,6 +90,17 @@ export default function Board() {
                         size="lg"
                     />
                     <ButtonText size="sm">Clear</ButtonText>
+                </Button>
+                <Button
+                    size="lg"
+                    onPress={handleToggleNotesMode}
+                    className="flex flex-col"
+                >
+                    <ButtonIcon
+                        as={isAddingNotes ? Pencil : PencilOff}
+                        size="lg"
+                    />
+                    <ButtonText size="sm">{isAddingNotes ? "Notes ON" : "Notes OFF"}</ButtonText>
                 </Button>
             </HStack>
         </Box>
