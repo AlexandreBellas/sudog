@@ -1,15 +1,23 @@
 import { IBoard } from "@/@types/board"
 import { IDifficultyLevel } from "@/@types/game"
 import { IPlayableTile, ITile } from "@/@types/tile"
+import { useBoardService } from "@/hooks/services/useBoardService"
 import { deepCopy } from "@/utils/deep-copy"
 import { createBoardTest } from "@/utils/sudoku/create-board-test"
 import { createBoardWithInitialState } from "@/utils/sudoku/create-board-with-initial-state"
+import { isBoardFull } from "@/utils/sudoku/is-board-full"
 import { isTileValueValid } from "@/utils/sudoku/is-tile-value-valid"
-import { createContext, useContext, useReducer } from "react"
+import { createContext, useContext, useEffect, useReducer } from "react"
 
 // #region Type definitions
+export interface IInitialBoardProps {
+    board: IPlayableTile[][]
+    solvedBoard: ITile<number>[][]
+}
+
 interface GameProviderProps {
     children: React.ReactNode
+    initialBoard?: IInitialBoardProps
 }
 
 interface GameContextState {
@@ -94,7 +102,12 @@ function createNewBoard(level: IDifficultyLevel, isTest = false): IBoard {
 // #endregion
 
 // #region Provider definition
-export default function GameProvider({ children }: Readonly<GameProviderProps>) {
+export default function GameProvider({ children, initialBoard }: Readonly<GameProviderProps>) {
+    // #region Services
+    const { boardGateway } = useBoardService()
+    // #endregion
+
+    // #region Provider state
     const initialState: GameContextState = {
         level: "easy",
         board: [],
@@ -104,9 +117,23 @@ export default function GameProvider({ children }: Readonly<GameProviderProps>) 
     }
 
     const [state, dispatch] = useReducer(GameReducer, initialState, (state) => {
+        if (initialBoard) return { ...state, ...initialBoard }
+
         const { current: board, solved: solvedBoard } = createNewBoard("easy", true)
         return { ...state, board, solvedBoard }
     })
+    // #endregion
+
+    // #region Effects
+    useEffect(() => {
+        if (isBoardFull(state.board)) {
+            boardGateway.clearBoard()
+            return
+        }
+
+        boardGateway.saveBoard({ board: state.board, solvedBoard: state.solvedBoard })
+    }, [state.board, boardGateway, state.solvedBoard])
+    // #endregion
 
     return (
         <GameContext.Provider value={state}>
