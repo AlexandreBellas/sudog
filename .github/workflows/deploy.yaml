@@ -22,7 +22,7 @@ jobs:
 
       - name: Generate NativeWind CSS
         working-directory: ./app
-        run: npx tailwindcss -i ./global.css -o ./output.css
+        run: npx tailwindcss -i ./global.css -o ./node_modules/.cache/nativewind/global.css
 
       - name: Build
         working-directory: ./app
