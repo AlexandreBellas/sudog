@@ -54,14 +54,15 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
         <ButtonGroup className={`${bgClassName ?? "bg-white"} aspect-square justify-center items-center box-content`}>
             <Button
                 onPress={handleSelectTile}
-                className="justify-center items-center"
+                className="justify-center items-center h-full"
                 data-hover={false}
                 isHovered={false}
             >
                 <ButtonText
                     className={`
+                        text-2xl font-medium
                         ${value.value === null ? "invisible" : ""}
-                        ${value.isClue ? "text-2xl font-bold text-gray-600" : "text-3xl font-medium text-gray-800"}
+                        ${value.isClue ? "text-gray-950" : "text-gray-600"}
                         ${!isCorrect ? "text-red-500 enabled:hover:text-red-500" : ""}
                     `}
                     size={value.isClue ? "md" : "sm"}
