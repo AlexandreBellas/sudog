@@ -20,6 +20,10 @@ jobs:
         working-directory: ./app
         run: npm install
 
+      - name: Generate NativeWind CSS
+        working-directory: ./app
+        run: npx tailwindcss -i ./global.css -o ./output.css
+
       - name: Build
         working-directory: ./app
         run: npm run export:web
