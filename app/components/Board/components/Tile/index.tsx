@@ -62,7 +62,7 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
                     className={`
                         text-2xl font-medium
                         ${value.value === null ? "invisible" : ""}
-                        ${value.isClue ? "text-gray-950" : "text-gray-600"}
+                        ${value.isClue ? "text-gray-950" : "text-blue-500"}
                         ${!isCorrect ? "text-red-500 enabled:hover:text-red-500" : ""}
                     `}
                     size={value.isClue ? "md" : "sm"}

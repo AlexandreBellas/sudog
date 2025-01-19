@@ -22,7 +22,7 @@ export default function VirtualKeyboard() {
                 <Button
                     key={number}
                     onPress={() => handlePlaceNumberForSelectedTile(number)}
-                    className="bg-gray-200 hover:bg-gray-300 aspect-square"
+                    className="bg-blue-100 text-blue-500 aspect-square"
                 >
                     {number}
                 </Button>
