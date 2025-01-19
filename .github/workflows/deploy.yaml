@@ -20,6 +20,7 @@ jobs:
         working-directory: ./app
         run: npm install
 
+      # @see https://github.com/nativewind/nativewind/issues/593#issuecomment-2355681096
       - name: Generate NativeWind CSS
         working-directory: ./app
         run: npx tailwindcss -i ./global.css -o ./node_modules/.cache/nativewind/global.css
