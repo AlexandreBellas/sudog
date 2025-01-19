@@ -1,8 +1,10 @@
+import { IAction } from "@/@types/action"
 import { IBoard } from "@/@types/board"
 import { IDifficultyLevel } from "@/@types/game"
 import { IPlayableTile, ITile } from "@/@types/tile"
 import { blockSize, boardSize } from "@/constants/game"
 import { useBoardService } from "@/hooks/services/useBoardService"
+import { ISaveableBoard } from "@/services/IBoardGateway"
 import { deepCopy } from "@/utils/deep-copy"
 import { createBoardTest } from "@/utils/sudoku/create-board-test"
 import { createBoardWithInitialState } from "@/utils/sudoku/create-board-with-initial-state"
@@ -11,10 +13,7 @@ import { isTileValueValid } from "@/utils/sudoku/is-tile-value-valid"
 import { createContext, useContext, useEffect, useMemo, useReducer } from "react"
 
 // #region Type definitions
-export interface IInitialBoardProps {
-    board: IPlayableTile[][]
-    solvedBoard: ITile<number>[][]
-}
+export type IInitialBoardProps = ISaveableBoard
 
 interface GameProviderProps {
     children: React.ReactNode
@@ -30,21 +29,7 @@ interface GameContextState {
         j: number
     }
     isAddingNotes: boolean
-    boardHistory: ({
-        i: number
-        j: number
-    } & (
-        | {
-              type: "value"
-              value: number
-              previousValue: number | null
-          }
-        | {
-              type: "note"
-              value: number[]
-              previousValue: number[]
-          }
-    ))[]
+    boardHistory: IAction[]
 }
 
 type GameContextAction =
@@ -118,7 +103,13 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
     }
 
     const [state, dispatch] = useReducer(GameReducer, initialState, (state) => {
-        if (initialBoard) return { ...state, ...initialBoard }
+        if (initialBoard)
+            return {
+                ...state,
+                board: initialBoard.board,
+                solvedBoard: initialBoard.solvedBoard,
+                boardHistory: initialBoard.history
+            }
 
         const { current: board, solved: solvedBoard } = createNewBoard("easy", true)
         return { ...state, board, solvedBoard }
@@ -142,8 +133,12 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
 
         console.debug("Board saved")
 
-        boardGateway.saveBoard({ board: state.board, solvedBoard: state.solvedBoard })
-    }, [isBoardSolved, state.board, boardGateway, state.solvedBoard])
+        boardGateway.saveBoard({
+            board: state.board,
+            solvedBoard: state.solvedBoard,
+            history: state.boardHistory
+        })
+    }, [isBoardSolved, state.board, boardGateway, state.solvedBoard, state.boardHistory])
     // #endregion
 
     return (
@@ -158,8 +153,15 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
 function GameReducer(state: GameContextState, action: GameContextAction): GameContextState {
     switch (action.type) {
         case "start-game": {
-            const { current: board, solved: solvedBoard } = createNewBoard(action.level ?? state.level)
-            return { ...state, board, solvedBoard }
+            const { current: board, solved: solvedBoard } = createNewBoard(action.level ?? state.level, true)
+            return {
+                ...state,
+                board,
+                solvedBoard,
+                boardHistory: [],
+                isAddingNotes: false,
+                selectedTilePosition: undefined
+            }
         }
         case "select-tile": {
             return {

@@ -1,6 +1,6 @@
 import { blockSize, boardSize } from "@/constants/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
-import { Eraser, Pencil, PencilOff, Undo } from "lucide-react-native"
+import { Eraser, Pencil, PencilOff, RefreshCcw, Undo } from "lucide-react-native"
 import { useCallback, useEffect } from "react"
 import { Box } from "../ui/box"
 import { Button, ButtonIcon, ButtonText } from "../ui/button"
@@ -25,6 +25,12 @@ export default function Board() {
 
     const handleUndoAction = useCallback(() => {
         gameDispatch({ type: "undo-last-action" })
+    }, [gameDispatch])
+
+    const handleRestartBoard = useCallback(() => {
+        if (confirm("Are you sure you want to restart? Your current progress will be lost.")) {
+            gameDispatch({ type: "start-game" })
+        }
     }, [gameDispatch])
     // #endregion
 
@@ -101,6 +107,17 @@ export default function Board() {
                         size="lg"
                     />
                     <ButtonText size="sm">{isAddingNotes ? "Notes ON" : "Notes OFF"}</ButtonText>
+                </Button>
+                <Button
+                    size="lg"
+                    onPress={handleRestartBoard}
+                    className="flex flex-col"
+                >
+                    <ButtonIcon
+                        as={RefreshCcw}
+                        size="lg"
+                    />
+                    <ButtonText size="sm">Restart</ButtonText>
                 </Button>
             </HStack>
         </Box>

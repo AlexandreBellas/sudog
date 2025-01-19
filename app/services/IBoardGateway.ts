@@ -1,19 +1,20 @@
+import { IAction } from "@/@types/action"
 import { IPlayableTile, ITile } from "@/@types/tile"
 
-export interface IBoardGatewaySaveBoardRequest {
+export interface ISaveableBoard {
     board: IPlayableTile[][]
     solvedBoard: ITile<number>[][]
+    history: IAction[]
 }
+
+export type IBoardGatewaySaveBoardRequest = ISaveableBoard
 
 export interface IBoardGatewaySaveBoardResponse {
     isSuccessful: boolean
 }
 
 export interface IBoardGatewayGetBoardResponse {
-    data: {
-        board: IPlayableTile[][]
-        solvedBoard: ITile<number>[][]
-    } | null
+    data: ISaveableBoard | null
 }
 
 export interface IBoardGatewayClearBoardResponse {

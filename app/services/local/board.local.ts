@@ -10,8 +10,7 @@ export default class BoardLocalGateway implements IBoardGateway {
     static readonly BOARD_KEY = "saved_board"
 
     async saveBoard(request: IBoardGatewaySaveBoardRequest): Promise<IBoardGatewaySaveBoardResponse> {
-        const { board, solvedBoard } = request
-        const serializedBoard = JSON.stringify({ board, solvedBoard })
+        const serializedBoard = JSON.stringify(request)
 
         try {
             await AsyncStorage.setItem(BoardLocalGateway.BOARD_KEY, serializedBoard)
@@ -27,8 +26,7 @@ export default class BoardLocalGateway implements IBoardGateway {
             const serializedBoard = await AsyncStorage.getItem(BoardLocalGateway.BOARD_KEY)
             if (!serializedBoard) return { data: null }
 
-            const { board, solvedBoard } = JSON.parse(serializedBoard)
-            return { data: { board, solvedBoard } }
+            return { data: JSON.parse(serializedBoard) }
         } catch (error) {
             console.error(error)
             return { data: null }
