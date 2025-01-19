@@ -1,6 +1,6 @@
 import { useGameDispatch } from "@/contexts/GameProvider"
 import { useCallback } from "react"
-import { Button } from "../ui/button"
+import { Button, ButtonText } from "../ui/button"
 
 export default function VirtualKeyboard() {
     // #region Contexts
@@ -22,9 +22,9 @@ export default function VirtualKeyboard() {
                 <Button
                     key={number}
                     onPress={() => handlePlaceNumberForSelectedTile(number)}
-                    className="bg-blue-100 text-blue-500 aspect-square"
+                    className="bg-blue-100 text-blue-500 px-2 md:aspect-square"
                 >
-                    {number}
+                    <ButtonText className="text-lg font-normal md:text-xl">{number}</ButtonText>
                 </Button>
             ))}
         </div>
