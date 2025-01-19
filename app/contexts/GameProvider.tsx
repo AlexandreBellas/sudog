@@ -189,7 +189,15 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
             const newBoard = deepCopy(state.board)
             const { i, j } = state.selectedTilePosition
 
-            newBoard[i][j].value = action.value
+            if (state.isAddingNotes) {
+                if (newBoard[i][j].notes.includes(action.value)) {
+                    newBoard[i][j].notes.splice(newBoard[i][j].notes.indexOf(action.value), 1)
+                } else {
+                    newBoard[i][j].notes.push(action.value)
+                }
+            } else {
+                newBoard[i][j].value = action.value
+            }
 
             return {
                 ...state,

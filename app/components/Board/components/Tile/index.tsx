@@ -1,8 +1,10 @@
 import { IPlayableTile } from "@/@types/tile"
+import { Box } from "@/components/ui/box"
 import { Button, ButtonGroup, ButtonText } from "@/components/ui/button"
 import { blockSize } from "@/constants/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
 import { useCallback, useMemo } from "react"
+import TileNotes from "../TileNotes"
 
 interface ITileProps {
     correctValue: number
@@ -51,26 +53,31 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
     // #endregion
 
     return (
-        <ButtonGroup className={`${bgClassName ?? "bg-white"} aspect-square justify-center items-center box-content`}>
-            <Button
-                onPress={handleSelectTile}
-                className="justify-center items-center h-full"
-                data-hover={false}
-                isHovered={false}
+        <Box className="relative">
+            <ButtonGroup
+                className={`${bgClassName ?? "bg-white"} aspect-square justify-center items-center box-content`}
             >
-                <ButtonText
-                    className={`
+                <Button
+                    onPress={handleSelectTile}
+                    className="justify-center items-center h-full"
+                    data-hover={false}
+                    isHovered={false}
+                >
+                    <ButtonText
+                        className={`
                         text-2xl font-medium
                         ${value.value === null ? "invisible" : ""}
                         ${value.isClue ? "text-gray-950" : "text-blue-500"}
                         ${!isCorrect ? "text-red-500 enabled:hover:text-red-500" : ""}
                     `}
-                    size={value.isClue ? "md" : "sm"}
-                    data-hover={false}
-                >
-                    {value.value ?? "0"}
-                </ButtonText>
-            </Button>
-        </ButtonGroup>
+                        size={value.isClue ? "md" : "sm"}
+                        data-hover={false}
+                    >
+                        {value.value ?? "0"}
+                    </ButtonText>
+                </Button>
+            </ButtonGroup>
+            {value.value === null && <TileNotes notes={value.notes} />}
+        </Box>
     )
 }

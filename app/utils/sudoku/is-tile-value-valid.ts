@@ -1,5 +1,5 @@
-import { blockSize } from "@/constants/game";
+import { blockSize } from "@/constants/game"
 
 export function isTileValueValid(value: number): boolean {
-    return 1 <= value && value <= (blockSize * blockSize)
+    return !isNaN(value) && 1 <= value && value <= blockSize * blockSize
 }
