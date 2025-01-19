@@ -10,7 +10,7 @@ import { createBoardTest } from "@/utils/sudoku/create-board-test"
 import { createBoardWithInitialState } from "@/utils/sudoku/create-board-with-initial-state"
 import { isBoardMatchingSolved } from "@/utils/sudoku/is-board-matching-solved"
 import { isTileValueValid } from "@/utils/sudoku/is-tile-value-valid"
-import { createContext, useContext, useEffect, useMemo, useReducer } from "react"
+import { createContext, useContext, useEffect, useReducer } from "react"
 
 // #region Type definitions
 export type IInitialBoardProps = ISaveableBoard
@@ -24,6 +24,7 @@ interface GameContextState {
     level: IDifficultyLevel
     board: IPlayableTile[][]
     solvedBoard: ITile<number>[][]
+    isBoardSolved: boolean
     selectedTilePosition?: {
         i: number
         j: number
@@ -99,7 +100,8 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
         board: [],
         solvedBoard: [],
         boardHistory: [],
-        isAddingNotes: false
+        isAddingNotes: false,
+        isBoardSolved: false
     }
 
     const [state, dispatch] = useReducer(GameReducer, initialState, (state) => {
@@ -116,16 +118,9 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
     })
     // #endregion
 
-    // #region Memos
-    const isBoardSolved = useMemo(
-        () => isBoardMatchingSolved({ current: state.board, solved: state.solvedBoard }),
-        [state.board, state.solvedBoard]
-    )
-    // #endregion
-
     // #region Effects
     useEffect(() => {
-        if (isBoardSolved) {
+        if (state.isBoardSolved) {
             console.debug("Board cleared")
             boardGateway.clearBoard()
             return
@@ -138,7 +133,7 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
             solvedBoard: state.solvedBoard,
             history: state.boardHistory
         })
-    }, [isBoardSolved, state.board, boardGateway, state.solvedBoard, state.boardHistory])
+    }, [state.isBoardSolved, state.board, boardGateway, state.solvedBoard, state.boardHistory])
     // #endregion
 
     return (
@@ -160,7 +155,8 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                 solvedBoard,
                 boardHistory: [],
                 isAddingNotes: false,
-                selectedTilePosition: undefined
+                selectedTilePosition: undefined,
+                isBoardSolved: false
             }
         }
         case "select-tile": {
@@ -184,7 +180,12 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                 newBoard[lastStep.i][lastStep.j].notes = lastStep.previousValue
             }
 
-            return { ...state, board: newBoard, boardHistory: newHistory }
+            return {
+                ...state,
+                board: newBoard,
+                boardHistory: newHistory,
+                isBoardSolved: isBoardMatchingSolved({ current: newBoard, solved: state.solvedBoard })
+            }
         }
         case "set-value-for-selected-tile": {
             if (!state.selectedTilePosition || !isTileValueValid(action.value)) return state
@@ -234,7 +235,10 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                         previousValue: state.board[i][j].value
                     }
                 ],
-                board: newBoard
+                board: newBoard,
+                isBoardSolved: !state.isAddingNotes
+                    ? isBoardMatchingSolved({ current: newBoard, solved: state.solvedBoard })
+                    : state.isBoardSolved
             }
         }
         case "clear-value-for-selected-tile": {
@@ -246,7 +250,11 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
 
             newBoard[i][j].value = null
 
-            return { ...state, board: newBoard }
+            return {
+                ...state,
+                board: newBoard,
+                isBoardSolved: isBoardMatchingSolved({ current: newBoard, solved: state.solvedBoard })
+            }
         }
         case "toggle-note-for-selected-tile": {
             if (!state.selectedTilePosition || !isTileValueValid(action.note)) return state

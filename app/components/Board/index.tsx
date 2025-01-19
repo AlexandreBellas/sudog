@@ -1,4 +1,4 @@
-import { blockSize, boardSize } from "@/constants/game"
+import { blockSize, boardSize, winTimeoutDelayMs } from "@/constants/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
 import { Eraser, Pencil, PencilOff, RefreshCcw, Undo } from "lucide-react-native"
 import { useCallback, useEffect } from "react"
@@ -9,7 +9,7 @@ import Block from "./components/Block"
 
 export default function Board() {
     // #region Contexts
-    const { isAddingNotes } = useGame()
+    const { isAddingNotes, isBoardSolved } = useGame()
     const gameDispatch = useGameDispatch()
     // #endregion
 
@@ -50,6 +50,16 @@ export default function Board() {
 
         return () => window.removeEventListener("keydown", handleKeyPress)
     }, [handleClearSelectedTile, gameDispatch])
+
+    useEffect(() => {
+        if (!isBoardSolved) return
+
+        setTimeout(() => {
+            if (confirm("Woof woof! You did it! 🐶🎉 Do you want to restart?")) {
+                gameDispatch({ type: "start-game" })
+            }
+        }, winTimeoutDelayMs)
+    }, [isBoardSolved, gameDispatch])
     // #endregion
 
     return (
