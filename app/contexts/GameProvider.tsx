@@ -5,9 +5,9 @@ import { useBoardService } from "@/hooks/services/useBoardService"
 import { deepCopy } from "@/utils/deep-copy"
 import { createBoardTest } from "@/utils/sudoku/create-board-test"
 import { createBoardWithInitialState } from "@/utils/sudoku/create-board-with-initial-state"
-import { isBoardFull } from "@/utils/sudoku/is-board-full"
+import { isBoardMatchingSolved } from "@/utils/sudoku/is-board-matching-solved"
 import { isTileValueValid } from "@/utils/sudoku/is-tile-value-valid"
-import { createContext, useContext, useEffect, useReducer } from "react"
+import { createContext, useContext, useEffect, useMemo, useReducer } from "react"
 
 // #region Type definitions
 export interface IInitialBoardProps {
@@ -124,15 +124,25 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
     })
     // #endregion
 
+    // #region Memos
+    const isBoardSolved = useMemo(
+        () => isBoardMatchingSolved({ current: state.board, solved: state.solvedBoard }),
+        [state.board, state.solvedBoard]
+    )
+    // #endregion
+
     // #region Effects
     useEffect(() => {
-        if (isBoardFull(state.board)) {
+        if (isBoardSolved) {
+            console.debug("Board cleared")
             boardGateway.clearBoard()
             return
         }
 
+        console.debug("Board saved")
+
         boardGateway.saveBoard({ board: state.board, solvedBoard: state.solvedBoard })
-    }, [state.board, boardGateway, state.solvedBoard])
+    }, [isBoardSolved, state.board, boardGateway, state.solvedBoard])
     // #endregion
 
     return (
