@@ -59,7 +59,7 @@ class BoardsController extends Controller
             ], 401);
         }
 
-        $levelQuery = $request->input('level');
+        $levelQuery = $request->input('level', 'easy');
         $level = Level::where('slug', $levelQuery)->first();
         if (! $level) {
             return response()->json([
