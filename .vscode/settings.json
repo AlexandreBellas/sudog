@@ -1,8 +1,5 @@
 {
-  "cSpell.words": ["Gluestack", "nativewind", "Sudog"],
-  "tailwindCSS.experimental.classRegex": [
-    ["tva\\((([^()]*|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
-  ],
+  // editor
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -15,18 +12,35 @@
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit",
     "source.fixAll": "explicit"
   },
-  "eslint.format.enable": false,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // eslint
+  "eslint.format.enable": false,
+
+  // prettier
   "prettier.enable": true,
+
+  // git
   "git.openRepositoryInParentFolders": "always",
+
+  // cSpell
+  "cSpell.words": ["Gluestack", "nativewind", "Sudog"],
+
+  // TailwindCSS
+  "tailwindCSS.experimental.classRegex": [
+    ["tva\\((([^()]*|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
 
   // jest
   "jest.rootPath": "./app",
   "jest.jestCommandLine": "npm run test",
   "jest.enable": true
+
+  // php
 }
