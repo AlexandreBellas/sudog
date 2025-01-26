@@ -16,7 +16,8 @@ return new class extends Migration
             $table->uuid('board_id')->unique();
             $table->string('level')->references('slug')->on('levels');
             $table->integer('size');
-            $table->text('serialized_board');
+            $table->text('content')->unique();
+            $table->text('solved')->unique();
             $table->timestamps();
         });
     }
