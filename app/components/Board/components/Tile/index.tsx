@@ -15,7 +15,7 @@ interface ITileProps {
 
 export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>) {
     // #region Contexts
-    const { selectedTilePosition } = useGame()
+    const { board, selectedTilePosition } = useGame()
     const gameDispatch = useGameDispatch()
     // #endregion
 
@@ -23,10 +23,17 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
     const iBlock = useMemo(() => Math.floor(i / blockSize), [i])
     const jBlock = useMemo(() => Math.floor(j / blockSize), [j])
 
-    const isSelected = useMemo(
-        () => selectedTilePosition?.i === i && selectedTilePosition?.j === j,
-        [selectedTilePosition, i, j]
-    )
+    const tileState = useMemo(() => {
+        if (!selectedTilePosition) return "none"
+
+        const selectedValue = board[selectedTilePosition.i][selectedTilePosition.j]?.value
+        if (!selectedValue) return "none"
+
+        if (selectedTilePosition?.i === i && selectedTilePosition?.j === j) return "selected"
+        if (selectedValue === value.value) return "indirectly-selected"
+
+        return "none"
+    }, [selectedTilePosition, i, j, board, value])
     const isOnRowOrColumnOrGridOfSelected = useMemo(
         () =>
             !!selectedTilePosition &&
@@ -37,11 +44,12 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
         [selectedTilePosition, i, j, iBlock, jBlock]
     )
     const bgClassName = useMemo(() => {
-        if (isSelected) return "bg-blue-300"
+        if (tileState === "selected") return "bg-blue-300"
+        if (tileState === "indirectly-selected") return "bg-blue-200"
         if (isOnRowOrColumnOrGridOfSelected) return "bg-blue-100"
 
         return null
-    }, [isSelected, isOnRowOrColumnOrGridOfSelected])
+    }, [tileState, isOnRowOrColumnOrGridOfSelected])
 
     const isCorrect = useMemo(() => value.value === correctValue, [value.value, correctValue])
     // #endregion
@@ -65,11 +73,11 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
                 >
                     <ButtonText
                         className={`
-                        text-2xl font-medium
-                        ${value.value === null ? "invisible" : ""}
-                        ${value.isClue ? "text-gray-950" : "text-blue-500"}
-                        ${!isCorrect ? "text-red-500 enabled:hover:text-red-500" : ""}
-                    `}
+                            text-2xl font-medium
+                            ${value.value === null ? "invisible" : ""}
+                            ${value.isClue ? "text-gray-950" : "text-blue-500 data-[hover=true]:text-blue-500"}
+                            ${!isCorrect ? "text-red-500 data-[hover=true]:text-red-500" : ""}
+                        `}
                         size={value.isClue ? "md" : "sm"}
                         data-hover={false}
                     >
