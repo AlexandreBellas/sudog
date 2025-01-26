@@ -17,7 +17,7 @@ export default function TileNoteItem({ note }: Readonly<ITileNoteItemProps>) {
 
     return (
         <Text
-            className="absolute text-gray-600 text-xs"
+            className="absolute text-gray-500 text-xs"
             style={{
                 top: `${verticalLine * (100 / (blockSize - 1))}%`,
                 left: `${horizontalLine * (100 / (blockSize - 1))}%`,

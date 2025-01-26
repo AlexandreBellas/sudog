@@ -26,10 +26,11 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
     const tileState = useMemo(() => {
         if (!selectedTilePosition) return "none"
 
+        if (selectedTilePosition?.i === i && selectedTilePosition?.j === j) return "selected"
+
         const selectedValue = board[selectedTilePosition.i][selectedTilePosition.j]?.value
         if (!selectedValue) return "none"
 
-        if (selectedTilePosition?.i === i && selectedTilePosition?.j === j) return "selected"
         if (selectedValue === value.value) return "indirectly-selected"
 
         return "none"
