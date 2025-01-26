@@ -1,0 +1,18 @@
+[
+    {
+        "slug": "easy",
+        "name": "Easy"
+    },
+    {
+        "slug": "medium",
+        "name": "Medium"
+    },
+    {
+        "slug": "hard",
+        "name": "Hard"
+    },
+    {
+        "slug": "expert",
+        "name": "Expert"
+    }
+]

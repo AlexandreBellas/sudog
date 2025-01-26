@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Level;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,7 +12,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $levels = json_decode(Storage::get('levels.json'), true);
+        $levels = json_decode(
+            file_get_contents(base_path('database/seeders/levels.json')),
+            true
+        );
 
         foreach ($levels as $level) {
             @[
