@@ -1,11 +1,13 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "alebatistella/sudog-server",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Sudog server",
     "keywords": [
-        "laravel",
-        "framework"
+        "sudog",
+        "server",
+        "sudoku",
+        "api"
     ],
     "license": "MIT",
     "require": {
