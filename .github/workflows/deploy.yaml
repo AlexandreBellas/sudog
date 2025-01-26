@@ -82,7 +82,7 @@ jobs:
 
       - name: Run migrations
         working-directory: ./server
-        run: php artisan migrate --seed
+        run: php artisan migrate --force --seed
 
       - name: Upload via FTP
         uses: airvzxf/ftp-deployment-action@latest
