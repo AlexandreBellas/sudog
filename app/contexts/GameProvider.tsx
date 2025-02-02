@@ -11,7 +11,7 @@ import { createBoardWithInitialState } from "@/utils/sudoku/create-board-with-in
 import { isBoardMatchingSolved } from "@/utils/sudoku/is-board-matching-solved"
 import { isTileValueValid } from "@/utils/sudoku/is-tile-value-valid"
 import { parseMatrixToSolvableBoard } from "@/utils/sudoku/parse-matrix-to-solvable-board"
-import { createContext, useContext, useEffect, useReducer } from "react"
+import { createContext, useContext, useEffect, useMemo, useReducer } from "react"
 
 // #region Type definitions
 export type IInitialBoardProps = ISaveableBoard
@@ -32,8 +32,8 @@ interface GameContextState {
     }
     isAddingNotes: boolean
     boardHistory: IAction[]
-
     isReloadingBoard: boolean
+    selectedTileValue: number | null
 }
 
 type GameContextAction =
@@ -110,10 +110,11 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
         boardHistory: [],
         isAddingNotes: false,
         isBoardSolved: false,
-        isReloadingBoard: false
+        isReloadingBoard: false,
+        selectedTileValue: null
     }
 
-    const [state, dispatch] = useReducer(GameReducer, initialState, (state) => {
+    const [rawState, dispatch] = useReducer(GameReducer, initialState, (state) => {
         if (initialBoard)
             return {
                 ...state,
@@ -125,6 +126,16 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
         const { current: board, solved: solvedBoard } = createNewBoard("easy", true)
         return { ...state, board, solvedBoard }
     })
+    // #endregion
+
+    // #region Memos
+    const selectedTileValue = useMemo(() => {
+        if (!rawState.selectedTilePosition) return null
+
+        return rawState.board[rawState.selectedTilePosition.i][rawState.selectedTilePosition.j].value
+    }, [rawState.selectedTilePosition, rawState.board])
+
+    const state = useMemo(() => ({ ...rawState, selectedTileValue }), [rawState, selectedTileValue])
     // #endregion
 
     // #region Effects

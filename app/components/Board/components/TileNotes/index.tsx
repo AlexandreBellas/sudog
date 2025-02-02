@@ -1,5 +1,6 @@
 import { Box } from "@/components/ui/box"
 import { blockSize } from "@/constants/game"
+import { useGame } from "@/contexts/GameProvider"
 import TileNoteItem from "../TileNoteItem"
 
 interface ITileNotesProps {
@@ -7,6 +8,10 @@ interface ITileNotesProps {
 }
 
 export default function TileNotes({ notes }: Readonly<ITileNotesProps>) {
+    // #region Contexts
+    const { selectedTileValue } = useGame()
+    // #endregion
+
     return (
         <Box className="absolute inset-0 sm:p-1 pointer-events-none">
             <Box className="relative h-full">
@@ -17,6 +22,7 @@ export default function TileNotes({ notes }: Readonly<ITileNotesProps>) {
                         <TileNoteItem
                             key={note}
                             note={note}
+                            isSelected={selectedTileValue === note}
                         />
                     ))}
             </Box>
