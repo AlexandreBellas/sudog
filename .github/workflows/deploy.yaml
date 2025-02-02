@@ -111,4 +111,5 @@ jobs:
           script: |
             cd /home/u787668067/domains/sudog.alebatistella.com/public_html/api
             tar -xf deploy.tar
+            rm deploy.tar
             php artisan optimize
