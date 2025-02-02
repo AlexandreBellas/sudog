@@ -1,7 +1,8 @@
+import { IDifficultyLevel } from "@/@types/game"
 import { ISaveableBoard } from "@/services/IBoardGateway"
 import { solveBoard } from "./solve-board"
 
-export function parseMatrixToSolvableBoard(matrix: (number | null)[][]): ISaveableBoard {
+export function parseMatrixToSolvableBoard(matrix: (number | null)[][], level?: IDifficultyLevel): ISaveableBoard {
     const board = matrix.map((row) => row.map((value) => ({ value, isClue: !!value, notes: [] })))
     const solvedBoard = solveBoard(board)
 
@@ -12,6 +13,7 @@ export function parseMatrixToSolvableBoard(matrix: (number | null)[][]): ISaveab
     return {
         board,
         solvedBoard: solvedBoard.board,
-        history: []
+        history: [],
+        level: level ?? "easy"
     }
 }
