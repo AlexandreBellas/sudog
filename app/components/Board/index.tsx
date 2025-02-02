@@ -1,12 +1,14 @@
 import { blockSize, boardSize, winTimeoutDelayMs } from "@/constants/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
 import { useStartNewGame } from "@/hooks/useStartNewGame"
-import { useCallback, useEffect } from "react"
+import { EditIcon } from "lucide-react-native"
+import { useCallback, useEffect, useState } from "react"
 import { Box } from "../ui/box"
+import { Button, ButtonIcon, ButtonText } from "../ui/button"
 import { Grid, GridItem } from "../ui/grid"
-import { Text } from "../ui/text"
 import ActionButtons from "./components/ActionButtons"
 import Block from "./components/Block"
+import ChooseLevelModal from "./components/ChooseLevelModal"
 
 export default function Board() {
     // #region Contexts
@@ -16,6 +18,10 @@ export default function Board() {
 
     // #region Game
     const { handleStartNewGame } = useStartNewGame()
+    // #endregion
+
+    // #region States
+    const [showChooseLevelModal, setShowChooseLevelModal] = useState(false)
     // #endregion
 
     // #region Callbacks
@@ -58,9 +64,15 @@ export default function Board() {
 
     return (
         <Box className={isReloadingBoard ? "opacity-50 pointer-events-none" : ""}>
-            <Box className="flex flex-row items-center gap-1">
-                <Text className="text-start text-sm font-bold">Level:</Text>
-                <Text className="text-start text-sm">{level}</Text>
+            <Box className="flex flex-row items-center gap-1 mb-1">
+                <Button
+                    onPress={() => setShowChooseLevelModal(true)}
+                    variant="outline"
+                    size="xs"
+                >
+                    <ButtonIcon as={EditIcon} />
+                    <ButtonText>Level: {level}</ButtonText>
+                </Button>
             </Box>
             <Grid
                 className="max-w-max gap-0.5 bg-gray-600 border-2 border-gray-600 aspect-square"
@@ -82,6 +94,10 @@ export default function Board() {
                 )}
             </Grid>
             <ActionButtons />
+            <ChooseLevelModal
+                showModal={showChooseLevelModal}
+                setShowModal={setShowChooseLevelModal}
+            />
         </Box>
     )
 }

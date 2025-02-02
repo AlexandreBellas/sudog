@@ -163,6 +163,7 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                 ...state,
                 board: board.board,
                 solvedBoard: board.solvedBoard,
+                level: action.level,
                 boardHistory: [],
                 isAddingNotes: false,
                 selectedTilePosition: undefined,

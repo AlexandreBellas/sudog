@@ -1,10 +1,15 @@
+import { IDifficultyLevel } from "@/@types/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 import { useBoardService } from "./services/useBoardService"
 
-export function useStartNewGame() {
+interface IUseStartNewGameProps {
+    level?: IDifficultyLevel
+}
+
+export function useStartNewGame({ level }: Readonly<IUseStartNewGameProps> = {}) {
     // #region Contexts
-    const { level } = useGame()
+    const { level: currLevel } = useGame()
     const gameDispatch = useGameDispatch()
     // #endregion
 
@@ -12,16 +17,23 @@ export function useStartNewGame() {
     const boardGateway = useBoardService()
     // #endregion
 
+    // #region Memos
+    const actualLevel = useMemo(() => level ?? currLevel, [level, currLevel])
+    // #endregion
+
     // #region Callbacks
     const handleStartNewGame = useCallback(
-        () =>
+        (level?: IDifficultyLevel) =>
             boardGateway
                 .clearBoard()
-                .then(() => boardGateway.newRandomBoard({ level }))
+                .then(() => boardGateway.newRandomBoard({ level: level ?? actualLevel }))
                 .then((board) => {
-                    gameDispatch({ type: "start-game", board: board.content, level })
+                    gameDispatch({ type: "start-game", board: board.content, level: level ?? actualLevel })
+                })
+                .catch((error) => {
+                    console.error(error)
                 }),
-        [boardGateway, gameDispatch, level]
+        [boardGateway, gameDispatch, actualLevel]
     )
     // #endregion
 

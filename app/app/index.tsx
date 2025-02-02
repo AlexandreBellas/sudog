@@ -7,6 +7,7 @@ import GameProvider, { IInitialBoardProps } from "@/contexts/GameProvider"
 import "@/global.css"
 import { useBoardService } from "@/hooks/services/useBoardService"
 import { parseMatrixToSolvableBoard } from "@/utils/sudoku/parse-matrix-to-solvable-board"
+import { OverlayProvider } from "@gluestack-ui/overlay"
 import { useEffect, useState } from "react"
 
 export default function Index() {
@@ -37,18 +38,20 @@ export default function Index() {
     // #endregion
 
     return (
-        <Box className="flex flex-row w-full justify-center p-5 overflow-hidden bg-blue-50 h-screen">
-            {isFetchingSavedBoard ? (
-                <Spinner size="small" />
-            ) : (
-                <Box className="flex flex-col justify-start items-center gap-2 overflow-auto">
-                    <HeadTitle />
-                    <GameProvider initialBoard={initialBoard}>
-                        <Board />
-                        <VirtualKeyboard />
-                    </GameProvider>
-                </Box>
-            )}
-        </Box>
+        <OverlayProvider>
+            <Box className="flex flex-row w-full justify-center p-5 overflow-hidden bg-blue-50 h-screen">
+                {isFetchingSavedBoard ? (
+                    <Spinner size="small" />
+                ) : (
+                    <Box className="flex flex-col justify-start items-center gap-2 overflow-auto">
+                        <HeadTitle />
+                        <GameProvider initialBoard={initialBoard}>
+                            <Board />
+                            <VirtualKeyboard />
+                        </GameProvider>
+                    </Box>
+                )}
+            </Box>
+        </OverlayProvider>
     )
 }
