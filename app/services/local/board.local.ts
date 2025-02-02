@@ -1,7 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import IBoardGateway, {
     IBoardGatewayClearBoardResponse,
+    IBoardGatewayGenerateBoardResponse,
     IBoardGatewayGetBoardResponse,
+    IBoardGatewayNewRandomBoardResponse,
     IBoardGatewaySaveBoardRequest,
     IBoardGatewaySaveBoardResponse
 } from "../IBoardGateway"
@@ -41,5 +43,13 @@ export default class BoardLocalGateway implements IBoardGateway {
             console.error(error)
             return { isSuccessful: false }
         }
+    }
+
+    async newRandomBoard(): Promise<IBoardGatewayNewRandomBoardResponse> {
+        throw new Error("Not implemented")
+    }
+
+    async generateBoard(): Promise<IBoardGatewayGenerateBoardResponse> {
+        throw new Error("Not implemented")
     }
 }

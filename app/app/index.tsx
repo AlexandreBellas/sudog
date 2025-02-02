@@ -6,11 +6,12 @@ import VirtualKeyboard from "@/components/VirtualKeyboard"
 import GameProvider, { IInitialBoardProps } from "@/contexts/GameProvider"
 import "@/global.css"
 import { useBoardService } from "@/hooks/services/useBoardService"
+import { parseMatrixToSolvableBoard } from "@/utils/sudoku/parse-matrix-to-solvable-board"
 import { useEffect, useState } from "react"
 
 export default function Index() {
     // #region Contexts
-    const { boardGateway } = useBoardService()
+    const boardGateway = useBoardService()
     // #endregion
 
     // #region States
@@ -22,7 +23,15 @@ export default function Index() {
     useEffect(() => {
         boardGateway
             .getBoard()
-            .then((board) => board.data && setInitialBoard(board.data))
+            .then((board) => {
+                if (board.data) {
+                    setInitialBoard(board.data)
+                    return
+                }
+
+                return boardGateway.newRandomBoard({ level: "easy" })
+            })
+            .then((board) => board && setInitialBoard(parseMatrixToSolvableBoard(board.content)))
             .finally(() => setIsFetchingSavedBoard(false))
     }, [boardGateway])
     // #endregion

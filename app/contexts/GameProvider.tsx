@@ -10,6 +10,7 @@ import { createBoardTest } from "@/utils/sudoku/create-board-test"
 import { createBoardWithInitialState } from "@/utils/sudoku/create-board-with-initial-state"
 import { isBoardMatchingSolved } from "@/utils/sudoku/is-board-matching-solved"
 import { isTileValueValid } from "@/utils/sudoku/is-tile-value-valid"
+import { parseMatrixToSolvableBoard } from "@/utils/sudoku/parse-matrix-to-solvable-board"
 import { createContext, useContext, useEffect, useReducer } from "react"
 
 // #region Type definitions
@@ -31,12 +32,15 @@ interface GameContextState {
     }
     isAddingNotes: boolean
     boardHistory: IAction[]
+
+    isReloadingBoard: boolean
 }
 
 type GameContextAction =
     | {
           type: "start-game"
-          level?: IDifficultyLevel
+          level: IDifficultyLevel
+          board: (number | null)[][]
       }
     | {
           type: "select-tile"
@@ -62,6 +66,10 @@ type GameContextAction =
       }
     | {
           type: "toggle-notes-mode"
+      }
+    | {
+          type: "mark-as-reloading-board"
+          isReloadingBoard: boolean
       }
 // #endregion
 
@@ -91,7 +99,7 @@ function createNewBoard(level: IDifficultyLevel, isTest = false): IBoard {
 // #region Provider definition
 export default function GameProvider({ children, initialBoard }: Readonly<GameProviderProps>) {
     // #region Services
-    const { boardGateway } = useBoardService()
+    const boardGateway = useBoardService()
     // #endregion
 
     // #region Provider state
@@ -101,7 +109,8 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
         solvedBoard: [],
         boardHistory: [],
         isAddingNotes: false,
-        isBoardSolved: false
+        isBoardSolved: false,
+        isReloadingBoard: false
     }
 
     const [state, dispatch] = useReducer(GameReducer, initialState, (state) => {
@@ -148,11 +157,12 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
 function GameReducer(state: GameContextState, action: GameContextAction): GameContextState {
     switch (action.type) {
         case "start-game": {
-            const { current: board, solved: solvedBoard } = createNewBoard(action.level ?? state.level, true)
+            const board = parseMatrixToSolvableBoard(action.board)
+
             return {
                 ...state,
-                board,
-                solvedBoard,
+                board: board.board,
+                solvedBoard: board.solvedBoard,
                 boardHistory: [],
                 isAddingNotes: false,
                 selectedTilePosition: undefined,
@@ -296,6 +306,9 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
         }
         case "toggle-notes-mode": {
             return { ...state, isAddingNotes: !state.isAddingNotes }
+        }
+        case "mark-as-reloading-board": {
+            return { ...state, isReloadingBoard: action.isReloadingBoard }
         }
         default: {
             return state
