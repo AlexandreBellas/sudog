@@ -151,9 +151,10 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
         boardGateway.saveBoard({
             board: state.board,
             solvedBoard: state.solvedBoard,
-            history: state.boardHistory
+            history: state.boardHistory,
+            level: state.level
         })
-    }, [state.isBoardSolved, state.board, boardGateway, state.solvedBoard, state.boardHistory])
+    }, [state.isBoardSolved, state.board, boardGateway, state.solvedBoard, state.boardHistory, state.level])
     // #endregion
 
     return (
@@ -168,7 +169,7 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
 function GameReducer(state: GameContextState, action: GameContextAction): GameContextState {
     switch (action.type) {
         case "start-game": {
-            const board = parseMatrixToSolvableBoard(action.board)
+            const board = parseMatrixToSolvableBoard(action.board, action.level)
 
             return {
                 ...state,

@@ -6,6 +6,7 @@ export interface ISaveableBoard {
     board: IPlayableTile[][]
     solvedBoard: ITile<number>[][]
     history: IAction[]
+    level: IDifficultyLevel
 }
 
 export type IBoardGatewaySaveBoardRequest = ISaveableBoard

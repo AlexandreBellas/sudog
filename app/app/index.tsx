@@ -32,7 +32,7 @@ export default function Index() {
 
                 return boardGateway.newRandomBoard({ level: "easy" })
             })
-            .then((board) => board && setInitialBoard(parseMatrixToSolvableBoard(board.content)))
+            .then((board) => board && setInitialBoard(parseMatrixToSolvableBoard(board.content, board.level)))
             .finally(() => setIsFetchingSavedBoard(false))
     }, [boardGateway])
     // #endregion
