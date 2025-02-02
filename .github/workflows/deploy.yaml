@@ -90,8 +90,7 @@ jobs:
         run: |
           if [ -d "./build" ]; then rm -r "./build"; fi
           mkdir ./build
-          cp -TR . ./build
-          tar --exclude=".git" -pcvf deploy.tar ./build/
+          tar --exclude=".git" -pcvf ./build/deploy.tar .
 
       - name: Upload via FTP
         uses: airvzxf/ftp-deployment-action@latest
