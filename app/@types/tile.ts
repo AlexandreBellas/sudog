@@ -4,6 +4,9 @@ export interface ITile<TValue extends number | null = number | null> {
 
 export interface IPlayableTile<TValue extends number | null = number | null> extends ITile<TValue> {
     notes: number[]
+    /**
+     * Marks as a initial tile.
+     */
     isClue: boolean
 }
 
