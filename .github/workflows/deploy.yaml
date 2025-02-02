@@ -17,6 +17,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Create .env file
+        working-directory: ./app
+        run: |
+          touch .env
+          echo EXPO_PUBLIC_API_URL="https://sudog-api.alebatistella.com" >> .env
+
       - name: Install dependencies
         working-directory: ./app
         run: npm install
@@ -67,6 +73,8 @@ jobs:
           echo DB_DATABASE="${{ secrets.DB_DATABASE }}" >> .env
           echo DB_USERNAME="${{ secrets.DB_USERNAME }}" >> .env
           echo DB_PASSWORD="${{ secrets.DB_PASSWORD }}" >> .env
+
+          echo ADMIN_ID="${{ secrets.ADMIN_ID }}" >> .env
 
       - name: Install/update Composer dependencies
         working-directory: ./server
