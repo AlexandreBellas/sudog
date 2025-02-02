@@ -99,7 +99,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           user: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local_dir: "./server/build/deploy.tar"
+          local_dir: "./server/build"
           remote_dir: "./api"
 
       - name: Unzip deploy files + optimize
