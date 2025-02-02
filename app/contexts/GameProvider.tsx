@@ -120,7 +120,8 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
                 ...state,
                 board: initialBoard.board,
                 solvedBoard: initialBoard.solvedBoard,
-                boardHistory: initialBoard.history
+                boardHistory: initialBoard.history,
+                level: initialBoard.level
             }
 
         const { current: board, solved: solvedBoard } = createNewBoard("easy", true)
