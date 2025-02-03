@@ -1,10 +1,12 @@
 import { difficultyLevels, IDifficultyLevel } from "@/@types/game"
 import { Button, ButtonGroup, ButtonText } from "@/components/ui/button"
+import { Image } from "@/components/ui/image"
 import { Modal, ModalBackdrop, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@/components/ui/modal"
 import { Text } from "@/components/ui/text"
 import { useStartNewGame } from "@/hooks/useStartNewGame"
 import { capitalize } from "@/utils/string/capitalize"
 import { useCallback, useState } from "react"
+import { mapLevelToBackgroundImage } from "./utils/options-background"
 
 interface IChooseLevelModalProps {
     showModal: boolean
@@ -42,23 +44,29 @@ export default function ChooseLevelModal({ showModal, setShowModal }: Readonly<I
         >
             <ModalBackdrop />
             <ModalContent
-                className={`bg-gray-200 
+                className={`bg-gray-300 
                     ${isChangingLevel ? "opacity-90 pointer-events-none" : ""}
                 `}
             >
                 <ModalHeader>
-                    <Text>Choose another level:</Text>
+                    <Text>Choose your level:</Text>
                 </ModalHeader>
                 <ModalBody>
-                    <ButtonGroup>
+                    <ButtonGroup className="grid grid-cols-2 gap-2">
                         {difficultyLevels.map((level) => (
                             <Button
+                                className="aspect-square w-full h-full relative"
                                 variant="outline"
                                 size="sm"
                                 onPress={() => handleChooseLevel(level)}
                                 key={level}
                             >
-                                <ButtonText>{capitalize(level)}</ButtonText>
+                                <Image
+                                    source={mapLevelToBackgroundImage(level)}
+                                    className="absolute inset-0 w-full h-full opacity-20"
+                                    alt={`${level} level background`}
+                                />
+                                <ButtonText className="text-3xl text-gray-700">{capitalize(level)}</ButtonText>
                             </Button>
                         ))}
                     </ButtonGroup>
