@@ -1,8 +1,10 @@
 import { IPlayableTile } from "@/@types/tile"
 import { Box } from "@/components/ui/box"
 import { Button, ButtonGroup, ButtonText } from "@/components/ui/button"
+import { Image } from "@/components/ui/image"
 import { blockSize } from "@/constants/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
+import { mapNumberToBackground } from "@/utils/dogs/map-number-to-background"
 import { useCallback, useMemo } from "react"
 import TileNotes from "../TileNotes"
 
@@ -52,6 +54,8 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
         return null
     }, [tileState, isOnRowOrColumnOrGridOfSelected])
 
+    const isHighlighted = useMemo(() => tileState === "selected" || tileState === "indirectly-selected", [tileState])
+
     const isCorrect = useMemo(() => value.value === correctValue, [value.value, correctValue])
     // #endregion
 
@@ -68,10 +72,20 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
             >
                 <Button
                     onPress={handleSelectTile}
-                    className="justify-center items-center h-full p-2 xs:p-3 sm:p-5 aspect-square"
+                    className="justify-center items-center h-full p-2 xs:p-3 sm:p-5 aspect-square relative"
                     data-hover={false}
                     isHovered={false}
                 >
+                    {value.value && (
+                        <Image
+                            source={mapNumberToBackground(value.value)}
+                            className={`absolute inset-0 object-contain max-h-full
+                                [clip-path:polygon(0_0,100%_0,100%_0,0_100%)]
+                                [mask-image:linear-gradient(135deg,black_0%,transparent_62.5%)]
+                                ${!isHighlighted ? "opacity-0" : "opacity-100"}
+                            `}
+                        />
+                    )}
                     <ButtonText
                         className={`
                             text-2xl font-medium
