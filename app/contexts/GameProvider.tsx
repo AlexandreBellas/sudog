@@ -144,7 +144,7 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
                 solvedBoard: initialBoard.solvedBoard,
                 boardHistory: initialBoard.history,
                 level: initialBoard.level,
-                errorsCount: initialBoard.errorsCount
+                errorsCount: initialBoard.errorsCount ?? 0
             }
 
             return { ...newState, isGameOver: calculateIsGameOver(newState) }
