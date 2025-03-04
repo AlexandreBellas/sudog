@@ -1,6 +1,6 @@
 import { IAction } from "@/@types/action"
 import { IBoard } from "@/@types/board"
-import { IDifficultyLevel } from "@/@types/game"
+import { IDifficultyLevel, IFeatureFlag } from "@/@types/game"
 import { IPlayableTile, ITile } from "@/@types/tile"
 import { blockSize, boardSize } from "@/constants/game"
 import { useBoardService } from "@/hooks/services/useBoardService"
@@ -11,6 +11,7 @@ import { createBoardWithInitialState } from "@/utils/sudoku/create-board-with-in
 import { isBoardMatchingSolved } from "@/utils/sudoku/is-board-matching-solved"
 import { isTileValueValid } from "@/utils/sudoku/is-tile-value-valid"
 import { parseMatrixToSolvableBoard } from "@/utils/sudoku/parse-matrix-to-solvable-board"
+import { SingleOrArray } from "@/utils/types/single-or-array"
 import { createContext, useContext, useEffect, useMemo, useReducer } from "react"
 
 // #region Type definitions
@@ -36,6 +37,7 @@ interface GameContextState {
     selectedTileValue: number | null
     errorsCount: number
     isGameOver: boolean
+    featureFlags: { [key in IFeatureFlag]: boolean }
 }
 
 type GameContextAction =
@@ -72,6 +74,13 @@ type GameContextAction =
     | {
           type: "mark-as-reloading-board"
           isReloadingBoard: boolean
+      }
+    | {
+          type: "set-feature-flag"
+          payload: SingleOrArray<{
+              featureFlag: IFeatureFlag
+              value: boolean
+          }>
       }
 // #endregion
 
@@ -119,7 +128,12 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
         isReloadingBoard: false,
         selectedTileValue: null,
         errorsCount: 0,
-        isGameOver: false
+        isGameOver: false,
+        featureFlags: {
+            notes: true,
+            dogs: true,
+            errors: true
+        }
     }
 
     const [rawState, dispatch] = useReducer(GameReducer, initialState, (state) => {
@@ -277,8 +291,8 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                         }
                     }
                 }
-                // Mark as error
-                else {
+                // Mark as error (only if errors feature flag is enabled)
+                else if (state.featureFlags.errors) {
                     errorsCount++
                 }
             }
@@ -373,6 +387,15 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
         }
         case "mark-as-reloading-board": {
             return { ...state, isReloadingBoard: action.isReloadingBoard }
+        }
+        case "set-feature-flag": {
+            const payload = Array.isArray(action.payload) ? action.payload : [action.payload]
+            const newFeatureFlags = payload.reduce((acc, curr) => {
+                acc[curr.featureFlag] = curr.value
+                return acc
+            }, state.featureFlags)
+
+            return { ...state, featureFlags: newFeatureFlags }
         }
         default: {
             return state

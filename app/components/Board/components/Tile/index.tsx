@@ -17,7 +17,7 @@ interface ITileProps {
 
 export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>) {
     // #region Contexts
-    const { board, selectedTilePosition } = useGame()
+    const { board, selectedTilePosition, featureFlags } = useGame()
     const gameDispatch = useGameDispatch()
     // #endregion
 
@@ -76,7 +76,7 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
                     data-hover={false}
                     isHovered={false}
                 >
-                    {value.value && (
+                    {value.value && featureFlags.dogs && (
                         <Image
                             source={mapNumberToBackground(value.value)}
                             className={`absolute inset-0 object-contain max-h-full
@@ -100,7 +100,7 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
                     </ButtonText>
                 </Button>
             </ButtonGroup>
-            {value.value === null && <TileNotes notes={value.notes} />}
+            {value.value === null && featureFlags.notes && <TileNotes notes={value.notes} />}
         </Box>
     )
 }

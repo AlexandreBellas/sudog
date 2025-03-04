@@ -7,7 +7,7 @@ import { useCallback } from "react"
 
 export default function ActionButtons() {
     // #region Contexts
-    const { isAddingNotes } = useGame()
+    const { isAddingNotes, featureFlags } = useGame()
     const gameDispatch = useGameDispatch()
     // #endregion
 
@@ -53,17 +53,19 @@ export default function ActionButtons() {
                 />
                 <ButtonText size="sm">Clear</ButtonText>
             </Button>
-            <Button
-                size="lg"
-                onPress={handleToggleNotesMode}
-                className="flex flex-col px-2"
-            >
-                <ButtonIcon
-                    as={isAddingNotes ? Pencil : PencilOff}
+            {featureFlags.notes && (
+                <Button
                     size="lg"
-                />
-                <ButtonText size="sm">{isAddingNotes ? "Notes ON" : "Notes OFF"}</ButtonText>
-            </Button>
+                    onPress={handleToggleNotesMode}
+                    className="flex flex-col px-2"
+                >
+                    <ButtonIcon
+                        as={isAddingNotes ? Pencil : PencilOff}
+                        size="lg"
+                    />
+                    <ButtonText size="sm">{isAddingNotes ? "Notes ON" : "Notes OFF"}</ButtonText>
+                </Button>
+            )}
             <Button
                 size="lg"
                 onPress={() => handleAskUserToRestartBoard()}
