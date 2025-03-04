@@ -1,27 +1,21 @@
-import { blockSize, boardSize, winTimeoutDelayMs } from "@/constants/game"
+import { blockSize, boardSize, loseTimeoutDelayMs, winTimeoutDelayMs } from "@/constants/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
 import { useStartNewGame } from "@/hooks/useStartNewGame"
-import { EditIcon } from "lucide-react-native"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect } from "react"
 import { Box } from "../ui/box"
-import { Button, ButtonIcon, ButtonText } from "../ui/button"
 import { Grid, GridItem } from "../ui/grid"
 import ActionButtons from "./components/ActionButtons"
 import Block from "./components/Block"
-import ChooseLevelModal from "./components/ChooseLevelModal"
+import Header from "./components/Header"
 
 export default function Board() {
     // #region Contexts
-    const { isBoardSolved, level, isReloadingBoard } = useGame()
+    const { isBoardSolved, isReloadingBoard, errorsCount } = useGame()
     const gameDispatch = useGameDispatch()
     // #endregion
 
     // #region Game
     const { handleStartNewGame } = useStartNewGame()
-    // #endregion
-
-    // #region States
-    const [showChooseLevelModal, setShowChooseLevelModal] = useState(false)
     // #endregion
 
     // #region Callbacks
@@ -31,6 +25,8 @@ export default function Board() {
     // #endregion
 
     // #region Effects
+
+    // onRenderAddKeyPressListener
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
             const key = event.key
@@ -48,6 +44,7 @@ export default function Board() {
         return () => window.removeEventListener("keydown", handleKeyPress)
     }, [handleClearSelectedTile, gameDispatch])
 
+    // onBoardSolvedShowWinningConditionAlert
     useEffect(() => {
         if (!isBoardSolved) return
 
@@ -60,20 +57,26 @@ export default function Board() {
             )
         }, winTimeoutDelayMs)
     }, [isBoardSolved, handleStartNewGame, gameDispatch])
+
+    // onThreeErrorsShowLoseConditionAlert
+    useEffect(() => {
+        if (errorsCount < 3) return
+
+        setTimeout(() => {
+            if (!confirm("🧟🧟🧟 Rawr rawr! You lost 💀 Do you want to start again?")) return
+
+            gameDispatch({ type: "mark-as-reloading-board", isReloadingBoard: true })
+            handleStartNewGame().finally(() =>
+                gameDispatch({ type: "mark-as-reloading-board", isReloadingBoard: false })
+            )
+        }, loseTimeoutDelayMs)
+    }, [errorsCount, handleStartNewGame, gameDispatch])
+
     // #endregion
 
     return (
         <Box className={isReloadingBoard ? "opacity-50 pointer-events-none" : ""}>
-            <Box className="flex flex-row items-center gap-1 mb-1">
-                <Button
-                    onPress={() => setShowChooseLevelModal(true)}
-                    variant="outline"
-                    size="xs"
-                >
-                    <ButtonIcon as={EditIcon} />
-                    <ButtonText>Level: {level}</ButtonText>
-                </Button>
-            </Box>
+            <Header />
             <Grid
                 className="max-w-max gap-0.5 bg-gray-600 border-2 border-gray-600 aspect-square"
                 _extra={{ className: "grid-cols-3" }}
@@ -94,10 +97,6 @@ export default function Board() {
                 )}
             </Grid>
             <ActionButtons />
-            <ChooseLevelModal
-                showModal={showChooseLevelModal}
-                setShowModal={setShowChooseLevelModal}
-            />
         </Box>
     )
 }

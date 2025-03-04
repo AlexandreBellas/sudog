@@ -34,6 +34,8 @@ interface GameContextState {
     boardHistory: IAction[]
     isReloadingBoard: boolean
     selectedTileValue: number | null
+    errorsCount: number
+    isGameOver: boolean
 }
 
 type GameContextAction =
@@ -94,6 +96,10 @@ function createNewBoard(level: IDifficultyLevel, isTest = false): IBoard {
 
     return createBoardWithInitialState(level)
 }
+
+function calculateIsGameOver(state: GameContextState): boolean {
+    return state.errorsCount >= 3
+}
 // #endregion
 
 // #region Provider definition
@@ -111,21 +117,28 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
         isAddingNotes: false,
         isBoardSolved: false,
         isReloadingBoard: false,
-        selectedTileValue: null
+        selectedTileValue: null,
+        errorsCount: 0,
+        isGameOver: false
     }
 
     const [rawState, dispatch] = useReducer(GameReducer, initialState, (state) => {
-        if (initialBoard)
-            return {
+        if (initialBoard) {
+            const newState: GameContextState = {
                 ...state,
                 board: initialBoard.board,
                 solvedBoard: initialBoard.solvedBoard,
                 boardHistory: initialBoard.history,
-                level: initialBoard.level
+                level: initialBoard.level,
+                errorsCount: initialBoard.errorsCount
             }
 
+            return { ...newState, isGameOver: calculateIsGameOver(newState) }
+        }
+
         const { current: board, solved: solvedBoard } = createNewBoard("easy", true)
-        return { ...state, board, solvedBoard }
+        const newState: GameContextState = { ...state, board, solvedBoard }
+        return { ...newState, isGameOver: calculateIsGameOver(newState) }
     })
     // #endregion
 
@@ -153,9 +166,18 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
             board: state.board,
             solvedBoard: state.solvedBoard,
             history: state.boardHistory,
-            level: state.level
+            level: state.level,
+            errorsCount: state.errorsCount
         })
-    }, [state.isBoardSolved, state.board, boardGateway, state.solvedBoard, state.boardHistory, state.level])
+    }, [
+        state.isBoardSolved,
+        state.board,
+        boardGateway,
+        state.solvedBoard,
+        state.boardHistory,
+        state.level,
+        state.errorsCount
+    ])
     // #endregion
 
     return (
@@ -167,7 +189,14 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
 // #endregion
 
 // #region Reducer definition
+const allowedActionsAfterGameOver = [
+    "start-game",
+    "mark-as-reloading-board",
+    "select-tile"
+] as GameContextAction["type"][]
 function GameReducer(state: GameContextState, action: GameContextAction): GameContextState {
+    if (state.isGameOver && !allowedActionsAfterGameOver.includes(action.type)) return state
+
     switch (action.type) {
         case "start-game": {
             const board = parseMatrixToSolvableBoard(action.board, action.level)
@@ -180,7 +209,9 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                 boardHistory: [],
                 isAddingNotes: false,
                 selectedTilePosition: undefined,
-                isBoardSolved: false
+                isBoardSolved: false,
+                errorsCount: 0,
+                isGameOver: false
             }
         }
         case "select-tile": {
@@ -216,6 +247,7 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
 
             const newBoard = deepCopy(state.board)
             const { i, j } = state.selectedTilePosition
+            let errorsCount = state.errorsCount
 
             if (state.isAddingNotes) {
                 if (newBoard[i][j].notes.includes(action.value)) {
@@ -245,9 +277,13 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                         }
                     }
                 }
+                // Mark as error
+                else {
+                    errorsCount++
+                }
             }
 
-            return {
+            const newState: GameContextState = {
                 ...state,
                 boardHistory: [
                     ...state.boardHistory,
@@ -262,7 +298,13 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                 board: newBoard,
                 isBoardSolved: !state.isAddingNotes
                     ? isBoardMatchingSolved({ current: newBoard, solved: state.solvedBoard })
-                    : state.isBoardSolved
+                    : state.isBoardSolved,
+                errorsCount
+            }
+
+            return {
+                ...newState,
+                isGameOver: calculateIsGameOver(newState)
             }
         }
         case "clear-value-for-selected-tile": {
