@@ -15,7 +15,7 @@ export default function Board() {
     // #endregion
 
     // #region Game
-    const { handleStartNewGame } = useStartNewGame()
+    const { handleStartNewGame, handleAskUserToRestartBoard } = useStartNewGame()
     // #endregion
 
     // #region Callbacks
@@ -37,12 +37,24 @@ export default function Board() {
             if (event.key === "Backspace") {
                 handleClearSelectedTile()
             }
+
+            if (event.key === "n") {
+                gameDispatch({ type: "toggle-notes-mode" })
+            }
+
+            if (event.key === "u") {
+                gameDispatch({ type: "undo-last-action" })
+            }
+
+            if (event.key === "r") {
+                handleAskUserToRestartBoard()
+            }
         }
 
         window.addEventListener("keydown", handleKeyPress)
 
         return () => window.removeEventListener("keydown", handleKeyPress)
-    }, [handleClearSelectedTile, gameDispatch])
+    }, [handleClearSelectedTile, gameDispatch, handleAskUserToRestartBoard])
 
     // onBoardSolvedShowWinningConditionAlert
     useEffect(() => {

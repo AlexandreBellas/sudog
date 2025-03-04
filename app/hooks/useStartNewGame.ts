@@ -35,7 +35,19 @@ export function useStartNewGame({ level }: Readonly<IUseStartNewGameProps> = {})
                 }),
         [boardGateway, gameDispatch, actualLevel]
     )
+
+    const handleAskUserToRestartBoard = useCallback(
+        (message?: string) => {
+            if (!confirm(message ?? "Are you sure you want to restart? Your current progress will be lost. 🦴")) return
+
+            gameDispatch({ type: "mark-as-reloading-board", isReloadingBoard: true })
+            handleStartNewGame().finally(() =>
+                gameDispatch({ type: "mark-as-reloading-board", isReloadingBoard: false })
+            )
+        },
+        [gameDispatch, handleStartNewGame]
+    )
     // #endregion
 
-    return { handleStartNewGame }
+    return { handleStartNewGame, handleAskUserToRestartBoard }
 }

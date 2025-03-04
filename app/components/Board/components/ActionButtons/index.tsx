@@ -12,7 +12,7 @@ export default function ActionButtons() {
     // #endregion
 
     // #region Game
-    const { handleStartNewGame } = useStartNewGame()
+    const { handleAskUserToRestartBoard } = useStartNewGame()
     // #endregion
 
     // #region Callbacks
@@ -27,13 +27,6 @@ export default function ActionButtons() {
     const handleUndoAction = useCallback(() => {
         gameDispatch({ type: "undo-last-action" })
     }, [gameDispatch])
-
-    const handleRestartBoard = useCallback(() => {
-        if (!confirm("Are you sure you want to restart? Your current progress will be lost. 🦴")) return
-
-        gameDispatch({ type: "mark-as-reloading-board", isReloadingBoard: true })
-        handleStartNewGame().finally(() => gameDispatch({ type: "mark-as-reloading-board", isReloadingBoard: false }))
-    }, [handleStartNewGame, gameDispatch])
     // #endregion
 
     return (
@@ -73,7 +66,7 @@ export default function ActionButtons() {
             </Button>
             <Button
                 size="lg"
-                onPress={handleRestartBoard}
+                onPress={() => handleAskUserToRestartBoard()}
                 className="flex flex-col px-2"
             >
                 <ButtonIcon
