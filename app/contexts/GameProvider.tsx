@@ -290,9 +290,17 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                     {
                         i,
                         j,
-                        type: "value",
-                        value: action.value,
-                        previousValue: state.board[i][j].value
+                        ...(state.isAddingNotes
+                            ? {
+                                  type: "note",
+                                  value: newBoard[i][j].notes,
+                                  previousValue: state.board[i][j].notes
+                              }
+                            : {
+                                  type: "value",
+                                  value: action.value,
+                                  previousValue: state.board[i][j].value
+                              })
                     }
                 ],
                 board: newBoard,
