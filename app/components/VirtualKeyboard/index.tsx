@@ -35,7 +35,7 @@ export default function VirtualKeyboard() {
                 <Button
                     key={number}
                     onPress={() => handlePlaceNumberForSelectedTile(number)}
-                    className="bg-blue-100 text-blue-500 px-2 sm:aspect-square 
+                    className="bg-blue-100 text-blue-500 px-2 aspect-square 
                         disabled:bg-gray-200 disabled:text-gray-500"
                     disabled={isOptionDisabled(number)}
                 >

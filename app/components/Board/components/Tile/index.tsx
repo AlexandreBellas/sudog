@@ -72,7 +72,7 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
             >
                 <Button
                     onPress={handleSelectTile}
-                    className="justify-center items-center h-full p-2 xs:p-3 sm:p-5 aspect-square relative"
+                    className="justify-center items-center h-full aspect-square relative"
                     data-hover={false}
                     isHovered={false}
                 >

@@ -55,7 +55,7 @@ export default function Index() {
 
     return (
         <OverlayProvider>
-            <Box className="flex flex-row w-full justify-center p-5 overflow-hidden bg-blue-50 h-screen">
+            <Box className="flex flex-row w-full justify-center px-1 sm:px-0 overflow-hidden bg-blue-50 h-screen">
                 {isFetchingSavedBoard ? (
                     <Spinner size="small" />
                 ) : (
