@@ -20,6 +20,7 @@ export type IInitialBoardProps = ISaveableBoard
 interface GameProviderProps {
     children: React.ReactNode
     initialBoard?: IInitialBoardProps
+    initialFeatureFlags?: { [key in IFeatureFlag]: boolean }
 }
 
 interface GameContextState {
@@ -112,7 +113,7 @@ function calculateIsGameOver(state: GameContextState): boolean {
 // #endregion
 
 // #region Provider definition
-export default function GameProvider({ children, initialBoard }: Readonly<GameProviderProps>) {
+export default function GameProvider({ children, initialBoard, initialFeatureFlags }: Readonly<GameProviderProps>) {
     // #region Services
     const boardGateway = useBoardService()
     // #endregion
@@ -129,7 +130,7 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
         selectedTileValue: null,
         errorsCount: 0,
         isGameOver: false,
-        featureFlags: {
+        featureFlags: initialFeatureFlags ?? {
             notes: true,
             dogs: true,
             errors: true
@@ -167,6 +168,8 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
     // #endregion
 
     // #region Effects
+
+    // onUpdateBoardSave
     useEffect(() => {
         if (state.isBoardSolved) {
             console.debug("Board cleared")
@@ -192,6 +195,12 @@ export default function GameProvider({ children, initialBoard }: Readonly<GamePr
         state.level,
         state.errorsCount
     ])
+
+    // onUpdateFeatureFlagsSave
+    useEffect(() => {
+        boardGateway.saveFeatureFlags(state.featureFlags)
+    }, [boardGateway, state.featureFlags])
+
     // #endregion
 
     return (
@@ -390,10 +399,13 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
         }
         case "set-feature-flag": {
             const payload = Array.isArray(action.payload) ? action.payload : [action.payload]
-            const newFeatureFlags = payload.reduce((acc, curr) => {
-                acc[curr.featureFlag] = curr.value
-                return acc
-            }, state.featureFlags)
+            const newFeatureFlags = payload.reduce(
+                (acc, curr) => {
+                    acc[curr.featureFlag] = curr.value
+                    return acc
+                },
+                { ...state.featureFlags }
+            )
 
             return { ...state, featureFlags: newFeatureFlags }
         }

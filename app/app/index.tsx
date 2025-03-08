@@ -1,3 +1,4 @@
+import { featureFlags, IFeatureFlag } from "@/@types/game"
 import Board from "@/components/Board"
 import HeadTitle from "@/components/HeadTitle"
 import { Box } from "@/components/ui/box"
@@ -17,12 +18,15 @@ export default function Index() {
 
     // #region States
     const [initialBoard, setInitialBoard] = useState<IInitialBoardProps>()
+    const [initialFeatureFlags, setInitialFeatureFlags] = useState<{ [key in IFeatureFlag]: boolean }>()
     const [isFetchingSavedBoard, setIsFetchingSavedBoard] = useState(true)
     // #endregion
 
     // #region Effects
+
+    // onRenderFetchSavedBoardAndFeatureFlags
     useEffect(() => {
-        boardGateway
+        const promiseBoard = boardGateway
             .getBoard()
             .then((board) => {
                 if (board.data) {
@@ -33,8 +37,20 @@ export default function Index() {
                 return boardGateway.newRandomBoard({ level: "easy" })
             })
             .then((board) => board && setInitialBoard(parseMatrixToSolvableBoard(board.content, board.level)))
-            .finally(() => setIsFetchingSavedBoard(false))
+
+        const promiseFeatureFlags = boardGateway.getFeatureFlags().then(
+            (featureFlagsResponse) =>
+                featureFlagsResponse.data &&
+                setInitialFeatureFlags(
+                    Object.fromEntries(featureFlags.map((f) => [f, featureFlagsResponse.data?.[f] ?? true])) as {
+                        [key in IFeatureFlag]: boolean
+                    }
+                )
+        )
+
+        Promise.allSettled([promiseBoard, promiseFeatureFlags]).finally(() => setIsFetchingSavedBoard(false))
     }, [boardGateway])
+
     // #endregion
 
     return (
@@ -45,7 +61,10 @@ export default function Index() {
                 ) : (
                     <Box className="flex flex-col justify-start items-center gap-2 overflow-auto">
                         <HeadTitle />
-                        <GameProvider initialBoard={initialBoard}>
+                        <GameProvider
+                            initialBoard={initialBoard}
+                            initialFeatureFlags={initialFeatureFlags}
+                        >
                             <Board />
                             <VirtualKeyboard />
                         </GameProvider>

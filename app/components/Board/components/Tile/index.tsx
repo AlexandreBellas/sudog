@@ -84,6 +84,7 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
                                 [mask-image:linear-gradient(135deg,black_0%,transparent_62.5%)]
                                 ${!isHighlighted ? "opacity-0" : "opacity-100"}
                             `}
+                            alt={`${value.value} dog`}
                         />
                     )}
                     <ButtonText
