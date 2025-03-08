@@ -30,11 +30,11 @@ export default function ActionButtons() {
     // #endregion
 
     return (
-        <Box className="flex flex-row py-2 justify-center">
+        <Box className="flex flex-row gap-1 py-2 justify-center">
             <Button
                 size="lg"
                 onPress={handleUndoAction}
-                className="flex flex-col px-2"
+                className="flex flex-col px-2 bg-white data-[hover=true]:bg-white/80"
             >
                 <ButtonIcon
                     as={Undo}
@@ -45,7 +45,7 @@ export default function ActionButtons() {
             <Button
                 size="lg"
                 onPress={handleClearSelectedTile}
-                className="flex flex-col px-2"
+                className="flex flex-col px-2 bg-white data-[hover=true]:bg-white/80"
             >
                 <ButtonIcon
                     as={Eraser}
@@ -57,7 +57,7 @@ export default function ActionButtons() {
                 <Button
                     size="lg"
                     onPress={handleToggleNotesMode}
-                    className="flex flex-col px-2"
+                    className="flex flex-col px-2 bg-white data-[hover=true]:bg-white/80"
                 >
                     <ButtonIcon
                         as={isAddingNotes ? Pencil : PencilOff}
@@ -69,7 +69,7 @@ export default function ActionButtons() {
             <Button
                 size="lg"
                 onPress={() => handleAskUserToRestartBoard()}
-                className="flex flex-col px-2"
+                className="flex flex-col px-2 bg-white data-[hover=true]:bg-white/80"
             >
                 <ButtonIcon
                     as={RefreshCcw}
