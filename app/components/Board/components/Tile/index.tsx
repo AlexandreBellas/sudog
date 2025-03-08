@@ -71,9 +71,7 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
 
     return (
         <Box className="relative">
-            <ButtonGroup
-                className={`${bgClassName ?? "bg-white"} aspect-square justify-center items-center box-content`}
-            >
+            <ButtonGroup className={`${bgClassName ?? "bg-white"} aspect-square justify-center items-center`}>
                 <Button
                     onPress={handleSelectTile}
                     className="justify-center items-center h-full aspect-square relative"

@@ -51,11 +51,14 @@ export default function Index() {
     // #endregion
 
     return (
-        <Box className="flex flex-row w-full justify-center px-1 pt-4 sm:px-0 overflow-hidden bg-blue-50 h-dvh z-10">
+        <Box
+            className="flex flex-row w-full justify-center px-1 pt-1 sm:pt-4 sm:px-0 overflow-hidden h-dvh z-10
+                bg-blue-50"
+        >
             {isFetchingSavedBoard ? (
                 <Spinner size="small" />
             ) : (
-                <Box className="flex flex-col justify-start items-center gap-2">
+                <Box className="flex flex-col justify-start items-center gap-1 sm:gap-2">
                     <HeadTitle />
                     <GameProvider
                         initialBoard={initialBoard}

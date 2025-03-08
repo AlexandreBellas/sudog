@@ -87,10 +87,15 @@ export default function Board() {
     // #endregion
 
     return (
-        <Box className={isReloadingBoard ? "opacity-50 pointer-events-none" : ""}>
+        <Box
+            className={`flex flex-col flex-initial overflow-hidden
+            ${isReloadingBoard ? "opacity-50 pointer-events-none" : ""}
+        `}
+        >
             <Header />
             <Grid
-                className="max-w-max gap-0.5 bg-gray-600 border-2 border-gray-600 aspect-square"
+                className="flex-initial min-h-0 max-h-max max-w-max gap-0.5 border-2 aspect-square self-center
+                    bg-gray-600 border-gray-600"
                 _extra={{ className: "grid-cols-3" }}
             >
                 {[...Array(boardSize).keys()].flatMap((i) =>

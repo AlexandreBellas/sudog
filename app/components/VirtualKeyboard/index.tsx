@@ -30,7 +30,7 @@ export default function VirtualKeyboard() {
     // #endregion
 
     return (
-        <div className="flex gap-1 justify-center overflow-hidden">
+        <div className="flex-none flex gap-1 justify-center overflow-hidden pb-1">
             {Array.from({ length: 9 }, (_, index) => index + 1).map((number) => (
                 <Button
                     key={number}

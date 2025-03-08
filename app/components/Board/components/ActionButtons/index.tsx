@@ -33,7 +33,7 @@ export default function ActionButtons() {
     // #endregion
 
     return (
-        <Box className="flex flex-row gap-1 py-2 justify-center">
+        <Box className="flex-none flex flex-row gap-1 py-2 justify-center">
             <ActionButton
                 icon={Undo}
                 onPress={handleUndoAction}

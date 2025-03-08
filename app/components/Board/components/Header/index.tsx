@@ -27,7 +27,7 @@ export default function Header() {
 
     return (
         <Fragment>
-            <Box className="flex flex-row items-end justify-between gap-1 mb-1">
+            <Box className="flex-none flex flex-row items-end justify-between gap-1 mb-1">
                 <Box className="flex flex-row gap-1">
                     <Button
                         onPress={() => setShowChooseLevelModal(true)}
