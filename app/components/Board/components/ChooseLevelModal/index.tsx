@@ -1,7 +1,16 @@
 import { difficultyLevels, IDifficultyLevel } from "@/@types/game"
 import { Button, ButtonGroup, ButtonText } from "@/components/ui/button"
+import { CloseIcon, Icon } from "@/components/ui/icon"
 import { Image } from "@/components/ui/image"
-import { Modal, ModalBackdrop, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@/components/ui/modal"
+import {
+    Modal,
+    ModalBackdrop,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader
+} from "@/components/ui/modal"
 import { Text } from "@/components/ui/text"
 import { useStartNewGame } from "@/hooks/useStartNewGame"
 import { capitalize } from "@/utils/string/capitalize"
@@ -44,12 +53,24 @@ export default function ChooseLevelModal({ showModal, setShowModal }: Readonly<I
         >
             <ModalBackdrop />
             <ModalContent
-                className={`bg-gray-300 
+                className={`bg-white border-0
                     ${isChangingLevel ? "opacity-90 pointer-events-none" : ""}
                 `}
             >
                 <ModalHeader>
-                    <Text>Choose your level:</Text>
+                    <Text
+                        size="lg"
+                        bold
+                    >
+                        Choose your level:
+                    </Text>
+                    <ModalCloseButton>
+                        <Icon
+                            as={CloseIcon}
+                            size="md"
+                            className="text-black"
+                        />
+                    </ModalCloseButton>
                 </ModalHeader>
                 <ModalBody>
                     <ButtonGroup className="grid grid-cols-2 gap-2">

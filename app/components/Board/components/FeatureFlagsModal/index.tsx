@@ -1,7 +1,16 @@
 import { featureFlagsLabels, IFeatureFlag } from "@/@types/game"
 import { Box } from "@/components/ui/box"
 import { Button, ButtonText } from "@/components/ui/button"
-import { Modal, ModalBackdrop, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@/components/ui/modal"
+import { CloseIcon, Icon } from "@/components/ui/icon"
+import {
+    Modal,
+    ModalBackdrop,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader
+} from "@/components/ui/modal"
 import { Switch } from "@/components/ui/switch"
 import { Text } from "@/components/ui/text"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
@@ -36,9 +45,21 @@ export default function FeatureFlagsModal({ showModal, setShowModal }: Readonly<
             size="md"
         >
             <ModalBackdrop />
-            <ModalContent className="bg-gray-300">
+            <ModalContent className="bg-white border-0">
                 <ModalHeader>
-                    <Text>Activate or deactivate game controls</Text>
+                    <Text
+                        size="lg"
+                        bold
+                    >
+                        Activate or deactivate game controls
+                    </Text>
+                    <ModalCloseButton>
+                        <Icon
+                            as={CloseIcon}
+                            size="md"
+                            className="text-black"
+                        />
+                    </ModalCloseButton>
                 </ModalHeader>
                 <ModalBody>
                     <Box className="flex flex-col gap-1">
