@@ -3,21 +3,21 @@ import IBoardGateway, {
     IBoardGatewayGenerateBoardRequest,
     IBoardGatewayGenerateBoardResponse,
     IBoardGatewayGetBoardResponse,
-    IBoardGatewayGetFeatureFlagsResponse,
+    IBoardGatewayGetConfigResponse,
     IBoardGatewayNewRandomBoardRequest,
     IBoardGatewayNewRandomBoardResponse,
     IBoardGatewaySaveBoardResponse,
-    IBoardGatewaySaveFeatureFlagsResponse
+    IBoardGatewaySaveConfigResponse
 } from "../IBoardGateway"
 
 export class BoardApiService implements IBoardGateway {
     constructor(private readonly apiUrl: string) {}
 
-    getFeatureFlags(): Promise<IBoardGatewayGetFeatureFlagsResponse> {
+    getConfig(): Promise<IBoardGatewayGetConfigResponse> {
         throw new Error("Method not implemented.")
     }
 
-    saveFeatureFlags(): Promise<IBoardGatewaySaveFeatureFlagsResponse> {
+    saveConfig(): Promise<IBoardGatewaySaveConfigResponse> {
         throw new Error("Method not implemented.")
     }
 

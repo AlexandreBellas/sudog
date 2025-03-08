@@ -1,5 +1,6 @@
 import { IAction } from "@/@types/action"
-import { IDifficultyLevel, IFeatureFlag } from "@/@types/game"
+import { IConfig } from "@/@types/config"
+import { IDifficultyLevel } from "@/@types/game"
 import { IPlayableTile, ITile } from "@/@types/tile"
 
 export interface ISaveableBoard {
@@ -9,17 +10,14 @@ export interface ISaveableBoard {
     level: IDifficultyLevel
     errorsCount: number
 }
+export type IBoardGatewaySaveConfigRequest = IConfig
 
-export type IBoardGatewaySaveFeatureFlagsRequest = {
-    [featureFlag in IFeatureFlag]?: boolean
-}
-
-export interface IBoardGatewaySaveFeatureFlagsResponse {
+export interface IBoardGatewaySaveConfigResponse {
     isSuccessful: boolean
 }
 
-export interface IBoardGatewayGetFeatureFlagsResponse {
-    data: { [featureFlag in IFeatureFlag]?: boolean } | null
+export interface IBoardGatewayGetConfigResponse {
+    data: IConfig | null
 }
 
 export type IBoardGatewaySaveBoardRequest = ISaveableBoard
@@ -65,8 +63,8 @@ export interface IBoardGatewayGenerateBoardResponse {
 }
 
 export default interface IBoardGateway {
-    saveFeatureFlags(request: IBoardGatewaySaveFeatureFlagsRequest): Promise<IBoardGatewaySaveFeatureFlagsResponse>
-    getFeatureFlags(): Promise<IBoardGatewayGetFeatureFlagsResponse>
+    saveConfig(request: IBoardGatewaySaveConfigRequest): Promise<IBoardGatewaySaveConfigResponse>
+    getConfig(): Promise<IBoardGatewayGetConfigResponse>
     saveBoard(request: IBoardGatewaySaveBoardRequest): Promise<IBoardGatewaySaveBoardResponse>
     getBoard(): Promise<IBoardGatewayGetBoardResponse>
     clearBoard(): Promise<IBoardGatewayClearBoardResponse>

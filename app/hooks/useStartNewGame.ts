@@ -1,7 +1,7 @@
 import { IDifficultyLevel } from "@/@types/game"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
+import { useService } from "@/contexts/ServiceProvider"
 import { useCallback, useMemo } from "react"
-import { useBoardService } from "./services/useBoardService"
 
 interface IUseStartNewGameProps {
     level?: IDifficultyLevel
@@ -14,7 +14,7 @@ export function useStartNewGame({ level }: Readonly<IUseStartNewGameProps> = {})
     // #endregion
 
     // #region Services
-    const boardGateway = useBoardService()
+    const { boardGateway } = useService()
     // #endregion
 
     // #region Memos

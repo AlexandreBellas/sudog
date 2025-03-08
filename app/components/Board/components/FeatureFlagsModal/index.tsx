@@ -23,7 +23,9 @@ interface IFeatureFlagsModalProps {
 
 export default function FeatureFlagsModal({ showModal, setShowModal }: Readonly<IFeatureFlagsModalProps>) {
     // #region Contexts
-    const { featureFlags } = useGame()
+    const {
+        config: { featureFlags }
+    } = useGame()
     const gameDispatch = useGameDispatch()
     // #endregion
 

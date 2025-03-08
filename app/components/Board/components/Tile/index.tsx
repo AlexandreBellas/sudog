@@ -17,7 +17,11 @@ interface ITileProps {
 
 export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>) {
     // #region Contexts
-    const { board, selectedTilePosition, featureFlags } = useGame()
+    const {
+        board,
+        selectedTilePosition,
+        config: { featureFlags }
+    } = useGame()
     const gameDispatch = useGameDispatch()
     // #endregion
 

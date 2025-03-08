@@ -1,6 +1,8 @@
 import { IAction } from "@/@types/action"
 import { IBoard } from "@/@types/board"
+import { createDefaultConfig, IConfig } from "@/@types/config"
 import { IDifficultyLevel, IFeatureFlag } from "@/@types/game"
+import { IMultiplayer } from "@/@types/multiplayer"
 import { IPlayableTile, ITile } from "@/@types/tile"
 import { blockSize, boardSize } from "@/constants/game"
 import { useBoardService } from "@/hooks/services/useBoardService"
@@ -20,7 +22,7 @@ export type IInitialBoardProps = ISaveableBoard
 interface GameProviderProps {
     children: React.ReactNode
     initialBoard?: IInitialBoardProps
-    initialFeatureFlags?: { [key in IFeatureFlag]: boolean }
+    initialConfig?: Partial<IConfig>
 }
 
 interface GameContextState {
@@ -38,7 +40,8 @@ interface GameContextState {
     selectedTileValue: number | null
     errorsCount: number
     isGameOver: boolean
-    featureFlags: { [key in IFeatureFlag]: boolean }
+    config: IConfig
+    multiplayer?: IMultiplayer
 }
 
 type GameContextAction =
@@ -83,6 +86,14 @@ type GameContextAction =
               value: boolean
           }>
       }
+    | {
+          type: "multiplayer-start-game"
+          multiplayer: IMultiplayer
+      }
+    | {
+          type: "multiplayer-receive-board"
+          remoteBoard: IBoard["current"]
+      }
 // #endregion
 
 // #region Context definitions
@@ -113,7 +124,7 @@ function calculateIsGameOver(state: GameContextState): boolean {
 // #endregion
 
 // #region Provider definition
-export default function GameProvider({ children, initialBoard, initialFeatureFlags }: Readonly<GameProviderProps>) {
+export default function GameProvider({ children, initialBoard, initialConfig }: Readonly<GameProviderProps>) {
     // #region Services
     const boardGateway = useBoardService()
     // #endregion
@@ -130,11 +141,8 @@ export default function GameProvider({ children, initialBoard, initialFeatureFla
         selectedTileValue: null,
         errorsCount: 0,
         isGameOver: false,
-        featureFlags: initialFeatureFlags ?? {
-            notes: true,
-            dogs: true,
-            errors: true
-        }
+        multiplayer: undefined,
+        config: createDefaultConfig(initialConfig)
     }
 
     const [rawState, dispatch] = useReducer(GameReducer, initialState, (state) => {
@@ -198,8 +206,8 @@ export default function GameProvider({ children, initialBoard, initialFeatureFla
 
     // onUpdateFeatureFlagsSave
     useEffect(() => {
-        boardGateway.saveFeatureFlags(state.featureFlags)
-    }, [boardGateway, state.featureFlags])
+        boardGateway.saveConfig(state.config)
+    }, [boardGateway, state.config])
 
     // #endregion
 
@@ -301,7 +309,7 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                     }
                 }
                 // Mark as error (only if errors feature flag is enabled)
-                else if (state.featureFlags.errors) {
+                else if (state.config.featureFlags.errors) {
                     errorsCount++
                 }
             }
@@ -404,10 +412,18 @@ function GameReducer(state: GameContextState, action: GameContextAction): GameCo
                     acc[curr.featureFlag] = curr.value
                     return acc
                 },
-                { ...state.featureFlags }
+                { ...state.config.featureFlags }
             )
 
-            return { ...state, featureFlags: newFeatureFlags }
+            return { ...state, config: { ...state.config, featureFlags: newFeatureFlags } }
+        }
+        case "multiplayer-start-game": {
+            return { ...state, multiplayer: action.multiplayer }
+        }
+        case "multiplayer-receive-board": {
+            if (!state.multiplayer) return state
+
+            return { ...state, multiplayer: { ...state.multiplayer, remoteBoard: action.remoteBoard } }
         }
         default: {
             return state

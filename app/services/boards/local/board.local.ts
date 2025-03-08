@@ -1,38 +1,38 @@
+import { createDefaultConfig, IConfig } from "@/@types/config"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import IBoardGateway, {
     IBoardGatewayClearBoardResponse,
     IBoardGatewayGenerateBoardResponse,
     IBoardGatewayGetBoardResponse,
-    IBoardGatewayGetFeatureFlagsResponse,
+    IBoardGatewayGetConfigResponse,
     IBoardGatewayNewRandomBoardResponse,
     IBoardGatewaySaveBoardRequest,
     IBoardGatewaySaveBoardResponse,
-    IBoardGatewaySaveFeatureFlagsRequest,
-    IBoardGatewaySaveFeatureFlagsResponse
+    IBoardGatewaySaveConfigRequest,
+    IBoardGatewaySaveConfigResponse
 } from "../IBoardGateway"
 
 export default class BoardLocalGateway implements IBoardGateway {
     static readonly BOARD_KEY = "saved_board"
-    static readonly FEATURE_FLAGS_KEY = "saved_feature_flags"
+    static readonly CONFIG_KEY = "saved_config"
 
-    async getFeatureFlags(): Promise<IBoardGatewayGetFeatureFlagsResponse> {
+    async getConfig(): Promise<IBoardGatewayGetConfigResponse> {
         try {
-            const serializedFeatureFlags = await AsyncStorage.getItem(BoardLocalGateway.FEATURE_FLAGS_KEY)
-            if (!serializedFeatureFlags) return { data: null }
+            const serializedConfig = await AsyncStorage.getItem(BoardLocalGateway.CONFIG_KEY)
+            if (!serializedConfig) return { data: null }
 
-            return { data: JSON.parse(serializedFeatureFlags) }
+            const rawConfig = JSON.parse(serializedConfig) as Partial<IConfig>
+            return { data: createDefaultConfig(rawConfig) }
         } catch (error) {
             console.error(error)
             return { data: null }
         }
     }
 
-    async saveFeatureFlags(
-        request: IBoardGatewaySaveFeatureFlagsRequest
-    ): Promise<IBoardGatewaySaveFeatureFlagsResponse> {
+    async saveConfig(request: IBoardGatewaySaveConfigRequest): Promise<IBoardGatewaySaveConfigResponse> {
         try {
-            const serializedFeatureFlags = JSON.stringify(request)
-            await AsyncStorage.setItem(BoardLocalGateway.FEATURE_FLAGS_KEY, serializedFeatureFlags)
+            const serializedConfig = JSON.stringify(request)
+            await AsyncStorage.setItem(BoardLocalGateway.CONFIG_KEY, serializedConfig)
             return { isSuccessful: true }
         } catch (error) {
             console.error(error)

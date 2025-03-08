@@ -1,24 +1,25 @@
-import { featureFlags, IFeatureFlag } from "@/@types/game"
+import { IConfig } from "@/@types/config"
+import backgroundImage from "@/assets/images/background.png"
 import Board from "@/components/Board"
 import HeadTitle from "@/components/HeadTitle"
 import { Box } from "@/components/ui/box"
+import { Image } from "@/components/ui/image"
 import { Spinner } from "@/components/ui/spinner"
 import VirtualKeyboard from "@/components/VirtualKeyboard"
 import GameProvider, { IInitialBoardProps } from "@/contexts/GameProvider"
+import { useService } from "@/contexts/ServiceProvider"
 import "@/global.css"
-import { useBoardService } from "@/hooks/services/useBoardService"
 import { parseMatrixToSolvableBoard } from "@/utils/sudoku/parse-matrix-to-solvable-board"
-import { OverlayProvider } from "@gluestack-ui/overlay"
 import { useEffect, useState } from "react"
 
 export default function Index() {
     // #region Contexts
-    const boardGateway = useBoardService()
+    const { boardGateway } = useService()
     // #endregion
 
     // #region States
     const [initialBoard, setInitialBoard] = useState<IInitialBoardProps>()
-    const [initialFeatureFlags, setInitialFeatureFlags] = useState<{ [key in IFeatureFlag]: boolean }>()
+    const [initialConfig, setInitialConfig] = useState<IConfig>()
     const [isFetchingSavedBoard, setIsFetchingSavedBoard] = useState(true)
     // #endregion
 
@@ -38,39 +39,38 @@ export default function Index() {
             })
             .then((board) => board && setInitialBoard(parseMatrixToSolvableBoard(board.content, board.level)))
 
-        const promiseFeatureFlags = boardGateway.getFeatureFlags().then(
-            (featureFlagsResponse) =>
-                featureFlagsResponse.data &&
-                setInitialFeatureFlags(
-                    Object.fromEntries(featureFlags.map((f) => [f, featureFlagsResponse.data?.[f] ?? true])) as {
-                        [key in IFeatureFlag]: boolean
-                    }
-                )
-        )
+        const promiseConfig = boardGateway.getConfig().then((configResponse) => {
+            if (configResponse.data) {
+                setInitialConfig(configResponse.data)
+            }
+        })
 
-        Promise.allSettled([promiseBoard, promiseFeatureFlags]).finally(() => setIsFetchingSavedBoard(false))
+        Promise.allSettled([promiseBoard, promiseConfig]).finally(() => setIsFetchingSavedBoard(false))
     }, [boardGateway])
 
     // #endregion
 
     return (
-        <OverlayProvider>
-            <Box className="flex flex-row w-full justify-center px-1 sm:px-0 overflow-hidden bg-blue-50 h-screen">
-                {isFetchingSavedBoard ? (
-                    <Spinner size="small" />
-                ) : (
-                    <Box className="flex flex-col justify-start items-center gap-2 overflow-auto">
-                        <HeadTitle />
-                        <GameProvider
-                            initialBoard={initialBoard}
-                            initialFeatureFlags={initialFeatureFlags}
-                        >
-                            <Board />
-                            <VirtualKeyboard />
-                        </GameProvider>
-                    </Box>
-                )}
-            </Box>
-        </OverlayProvider>
+        <Box className="flex flex-row w-full justify-center px-1 pt-4 sm:px-0 overflow-hidden bg-blue-50 h-screen z-10">
+            {isFetchingSavedBoard ? (
+                <Spinner size="small" />
+            ) : (
+                <Box className="flex flex-col justify-start items-center gap-2 overflow-auto">
+                    <HeadTitle />
+                    <GameProvider
+                        initialBoard={initialBoard}
+                        initialConfig={initialConfig}
+                    >
+                        <Board />
+                        <VirtualKeyboard />
+                    </GameProvider>
+                </Box>
+            )}
+            <Image
+                source={backgroundImage}
+                alt="background"
+                className="absolute top-0 left-0 w-full h-full -z-10 opacity-15"
+            />
+        </Box>
     )
 }

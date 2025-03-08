@@ -1,20 +1,28 @@
 import { Badge, BadgeIcon, BadgeText } from "@/components/ui/badge"
 import { Box } from "@/components/ui/box"
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
 import { useGame } from "@/contexts/GameProvider"
-import { CircleX, EditIcon, Wrench } from "lucide-react-native"
+import { capitalize } from "@/utils/string/capitalize"
+import { CircleX, EditIcon, UserRoundSearch, Wrench } from "lucide-react-native"
 import { Fragment, useState } from "react"
 import ChooseLevelModal from "../ChooseLevelModal"
 import FeatureFlagsModal from "../FeatureFlagsModal"
+import MultiplayerConnectionModal from "../MultiplayerConnectionModal"
 
 export default function Header() {
     // #region Contexts
-    const { level, errorsCount, featureFlags } = useGame()
+    const {
+        level,
+        errorsCount,
+        config: { featureFlags }
+    } = useGame()
     // #endregion
 
     // #region States
     const [showChooseLevelModal, setShowChooseLevelModal] = useState(false)
     const [showFeatureFlagsModal, setShowFeatureFlagsModal] = useState(false)
+    const [showMultiplayerConnectionModal, setShowMultiplayerConnectionModal] = useState(false)
     // #endregion
 
     return (
@@ -28,10 +36,10 @@ export default function Header() {
                     >
                         <ButtonIcon
                             as={EditIcon}
-                            className="text-blue-100 data-[hover=true]:text-blue-100"
+                            className="text-blue-100 data-[hover=true]:text-blue-100 data-[active=true]:text-black"
                         />
                         <ButtonText className="text-blue-100 data-[hover=true]:text-blue-100">
-                            Level: {level}
+                            {capitalize(level)}
                         </ButtonText>
                     </Button>
                     <Button
@@ -40,7 +48,29 @@ export default function Header() {
                         size="xs"
                     >
                         <ButtonIcon as={Wrench} />
-                        <ButtonText>Controls</ButtonText>
+                    </Button>
+                    <Button
+                        onPress={() => setShowMultiplayerConnectionModal(true)}
+                        variant="outline"
+                        size="xs"
+                        action="positive"
+                        className="bg-[#267338] data-[hover=true]:bg-[#108345] 
+                            border-[#267338] data-[hover=true]:border-[#108345]"
+                        isDisabled={true || showMultiplayerConnectionModal}
+                    >
+                        {!showMultiplayerConnectionModal && (
+                            <ButtonIcon
+                                className="text-white data-[hover=true]:text-white data-[active=true]:text-black"
+                                as={UserRoundSearch}
+                            />
+                        )}
+                        {showMultiplayerConnectionModal && (
+                            <Spinner
+                                size="small"
+                                color="white"
+                            />
+                        )}
+                        <ButtonText className="text-white data-[hover=true]:text-white">Coming soon</ButtonText>
                     </Button>
                 </Box>
                 {featureFlags.errors && (
@@ -64,6 +94,10 @@ export default function Header() {
             <FeatureFlagsModal
                 showModal={showFeatureFlagsModal}
                 setShowModal={setShowFeatureFlagsModal}
+            />
+            <MultiplayerConnectionModal
+                showModal={showMultiplayerConnectionModal}
+                setShowModal={setShowMultiplayerConnectionModal}
             />
         </Fragment>
     )

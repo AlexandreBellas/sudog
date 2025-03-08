@@ -7,7 +7,10 @@ import { useCallback } from "react"
 
 export default function ActionButtons() {
     // #region Contexts
-    const { isAddingNotes, featureFlags } = useGame()
+    const {
+        isAddingNotes,
+        config: { featureFlags }
+    } = useGame()
     const gameDispatch = useGameDispatch()
     // #endregion
 

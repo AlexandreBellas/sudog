@@ -9,8 +9,8 @@ export function useBoardService(): IBoardGateway {
         const apiInstance = new BoardApiService(process.env.EXPO_PUBLIC_API_URL ?? "")
 
         return {
-            getFeatureFlags: localInstance.getFeatureFlags.bind(localInstance),
-            saveFeatureFlags: localInstance.saveFeatureFlags.bind(localInstance),
+            getConfig: localInstance.getConfig.bind(localInstance),
+            saveConfig: localInstance.saveConfig.bind(localInstance),
             getBoard: localInstance.getBoard.bind(localInstance),
             saveBoard: localInstance.saveBoard.bind(localInstance),
             clearBoard: localInstance.clearBoard.bind(localInstance),
