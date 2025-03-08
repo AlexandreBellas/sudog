@@ -35,8 +35,11 @@ export default function VirtualKeyboard() {
                 <Button
                     key={number}
                     onPress={() => handlePlaceNumberForSelectedTile(number)}
-                    className="bg-blue-100 text-blue-500 px-2 aspect-square 
-                        disabled:bg-gray-200 disabled:text-gray-500"
+                    className="bg-blue-100 text-blue-500 px-2 aspect-square border-[1px]
+                        border-blue-500
+                        disabled:bg-gray-200 disabled:text-gray-500
+                        data-[hover=true]:bg-blue-200 data-[hover=true]:text-blue-600
+                        data-[active=true]:bg-blue-300 data-[active=true]:text-blue-700"
                     disabled={isOptionDisabled(number)}
                 >
                     <ButtonText className="text-lg font-normal sm:text-xl">{number}</ButtonText>
