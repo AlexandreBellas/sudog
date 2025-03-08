@@ -47,8 +47,8 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
         [selectedTilePosition, i, j, iBlock, jBlock]
     )
     const bgClassName = useMemo(() => {
-        if (tileState === "selected") return "bg-blue-500"
-        if (tileState === "indirectly-selected") return "bg-blue-300"
+        if (tileState === "selected") return "bg-blue-500/80"
+        if (tileState === "indirectly-selected") return "bg-blue-200"
         if (isOnRowOrColumnOrGridOfSelected) return "bg-blue-100"
 
         return null

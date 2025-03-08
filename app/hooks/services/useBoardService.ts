@@ -1,6 +1,6 @@
-import { BoardApiService } from "@/services/api/board.api"
-import IBoardGateway from "@/services/IBoardGateway"
-import BoardLocalGateway from "@/services/local/board.local"
+import { BoardApiService } from "@/services/boards/api/board.api"
+import IBoardGateway from "@/services/boards/IBoardGateway"
+import BoardLocalGateway from "@/services/boards/local/board.local"
 import { useMemo } from "react"
 
 export function useBoardService(): IBoardGateway {

@@ -1,5 +1,5 @@
 import { IDifficultyLevel } from "@/@types/game"
-import { ISaveableBoard } from "@/services/IBoardGateway"
+import { ISaveableBoard } from "@/services/boards/IBoardGateway"
 import { solveBoard } from "./solve-board"
 
 export function parseMatrixToSolvableBoard(matrix: (number | null)[][], level?: IDifficultyLevel): ISaveableBoard {
@@ -14,6 +14,7 @@ export function parseMatrixToSolvableBoard(matrix: (number | null)[][], level?: 
         board,
         solvedBoard: solvedBoard.board,
         history: [],
-        level: level ?? "easy"
+        level: level ?? "easy",
+        errorsCount: 0
     }
 }
