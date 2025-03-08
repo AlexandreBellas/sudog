@@ -1,9 +1,9 @@
 import { Box } from "@/components/ui/box"
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
 import { useStartNewGame } from "@/hooks/useStartNewGame"
 import { Eraser, Pencil, PencilOff, RefreshCcw, Undo } from "lucide-react-native"
 import { useCallback } from "react"
+import ActionButton from "./components/ActionButton"
 
 export default function ActionButtons() {
     // #region Contexts
@@ -34,52 +34,28 @@ export default function ActionButtons() {
 
     return (
         <Box className="flex flex-row gap-1 py-2 justify-center">
-            <Button
-                size="lg"
+            <ActionButton
+                icon={Undo}
                 onPress={handleUndoAction}
-                className="flex flex-col px-2 bg-white data-[hover=true]:bg-white/80"
-            >
-                <ButtonIcon
-                    as={Undo}
-                    size="lg"
-                />
-                <ButtonText size="sm">Undo</ButtonText>
-            </Button>
-            <Button
-                size="lg"
+                text="Undo"
+            />
+            <ActionButton
+                icon={Eraser}
                 onPress={handleClearSelectedTile}
-                className="flex flex-col px-2 bg-white data-[hover=true]:bg-white/80"
-            >
-                <ButtonIcon
-                    as={Eraser}
-                    size="lg"
-                />
-                <ButtonText size="sm">Clear</ButtonText>
-            </Button>
+                text="Clear"
+            />
             {featureFlags.notes && (
-                <Button
-                    size="lg"
+                <ActionButton
+                    icon={isAddingNotes ? Pencil : PencilOff}
                     onPress={handleToggleNotesMode}
-                    className="flex flex-col px-2 bg-white data-[hover=true]:bg-white/80"
-                >
-                    <ButtonIcon
-                        as={isAddingNotes ? Pencil : PencilOff}
-                        size="lg"
-                    />
-                    <ButtonText size="sm">{isAddingNotes ? "Notes ON" : "Notes OFF"}</ButtonText>
-                </Button>
-            )}
-            <Button
-                size="lg"
-                onPress={() => handleAskUserToRestartBoard()}
-                className="flex flex-col px-2 bg-white data-[hover=true]:bg-white/80"
-            >
-                <ButtonIcon
-                    as={RefreshCcw}
-                    size="lg"
+                    text={isAddingNotes ? "Notes ON" : "Notes OFF"}
                 />
-                <ButtonText size="sm">Restart</ButtonText>
-            </Button>
+            )}
+            <ActionButton
+                icon={RefreshCcw}
+                onPress={() => handleAskUserToRestartBoard()}
+                text="Restart"
+            />
         </Box>
     )
 }
