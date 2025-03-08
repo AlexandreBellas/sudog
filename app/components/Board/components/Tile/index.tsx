@@ -47,8 +47,8 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
         [selectedTilePosition, i, j, iBlock, jBlock]
     )
     const bgClassName = useMemo(() => {
-        if (tileState === "selected") return "bg-blue-300"
-        if (tileState === "indirectly-selected") return "bg-blue-200"
+        if (tileState === "selected") return "bg-blue-500"
+        if (tileState === "indirectly-selected") return "bg-blue-300"
         if (isOnRowOrColumnOrGridOfSelected) return "bg-blue-100"
 
         return null
@@ -80,8 +80,8 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
                         <Image
                             source={mapNumberToBackground(value.value)}
                             className={`absolute inset-0 object-contain max-h-full
-                                [clip-path:polygon(0_0,100%_0,100%_0,0_100%)]
-                                [mask-image:linear-gradient(135deg,black_0%,transparent_62.5%)]
+                                [clip-path:polygon(0_0,100%_0,100%_30%,30%_100%,0_100%)]
+                                [mask-image:linear-gradient(135deg,black_0%,transparent_70%)]
                                 ${!isHighlighted ? "opacity-0" : "opacity-100"}
                             `}
                             alt={`${value.value} dog`}
