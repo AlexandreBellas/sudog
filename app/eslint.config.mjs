@@ -26,7 +26,8 @@ export default [
             "no-else-return": "error",
             "max-len": ["warn", 120],
             "react/prop-types": "off",
-            "@typescript-eslint/no-empty-function": "off"
+            "@typescript-eslint/no-empty-function": "off",
+            "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }]
         }
     }
 ]
