@@ -1,4 +1,4 @@
-import { featureFlagsLabels, IFeatureFlag } from "@/@types/game"
+import { featureFlagsDetails, IFeatureFlag } from "@/@types/game"
 import { Box } from "@/components/ui/box"
 import { Button, ButtonText } from "@/components/ui/button"
 import { CloseIcon, Icon } from "@/components/ui/icon"
@@ -74,8 +74,11 @@ export default function FeatureFlagsModal({ showModal, setShowModal }: Readonly<
                                     size="sm"
                                     value={value}
                                     onToggle={() => handleToggleFeatureFlag(featureFlag as IFeatureFlag)}
+                                    isDisabled={featureFlagsDetails[featureFlag as IFeatureFlag]?.dependencies.some(
+                                        (dependency) => !featureFlags[dependency]
+                                    )}
                                 />
-                                <Text>{featureFlagsLabels[featureFlag as IFeatureFlag]}</Text>
+                                <Text>{featureFlagsDetails[featureFlag as IFeatureFlag].label}</Text>
                             </Box>
                         ))}
                     </Box>

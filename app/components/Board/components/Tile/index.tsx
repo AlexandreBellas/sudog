@@ -50,17 +50,29 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
                     jBlock === Math.floor(selectedTilePosition.j / blockSize))),
         [selectedTilePosition, i, j, iBlock, jBlock]
     )
+    const isCorrect = useMemo(() => (value.value ? value.value === correctValue : null), [value.value, correctValue])
+
     const bgClassName = useMemo(() => {
-        if (tileState === "selected") return value.value ? "bg-blue-500/80" : "bg-blue-300"
-        if (tileState === "indirectly-selected") return "bg-blue-200"
+        if (featureFlags.onlyDogs && isCorrect === false) return "bg-red-700"
+        if (tileState === "selected") return value.value ? "bg-blue-500" : "bg-blue-300/80"
+        if (tileState === "indirectly-selected") return "bg-blue-300"
         if (isOnRowOrColumnOrGridOfSelected) return "bg-blue-100"
 
         return null
-    }, [tileState, isOnRowOrColumnOrGridOfSelected, value.value])
+    }, [tileState, isOnRowOrColumnOrGridOfSelected, value.value, isCorrect, featureFlags.onlyDogs])
 
     const isHighlighted = useMemo(() => tileState === "selected" || tileState === "indirectly-selected", [tileState])
 
-    const isCorrect = useMemo(() => value.value === correctValue, [value.value, correctValue])
+    const dogImageOpacityClassName = useMemo(() => {
+        if (featureFlags.onlyDogs) {
+            if (isCorrect === false) return "opacity-60"
+            if (isHighlighted) return "opacity-100"
+            return "opacity-30"
+        }
+
+        if (isHighlighted) return "opacity-100"
+        return "opacity-0"
+    }, [featureFlags.onlyDogs, isCorrect, isHighlighted])
     // #endregion
 
     // #region Callbacks
@@ -82,9 +94,13 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
                         <Image
                             source={mapNumberToBackground(value.value)}
                             className={`absolute inset-0 object-contain max-h-full
-                                [clip-path:polygon(0_0,100%_0,100%_30%,30%_100%,0_100%)]
-                                [mask-image:linear-gradient(135deg,black_0%,transparent_70%)]
-                                ${!isHighlighted ? "opacity-0" : "opacity-100"}
+                                ${
+                                    !featureFlags.onlyDogs
+                                        ? `[clip-path:polygon(0_0,100%_0,100%_30%,30%_100%,0_100%)]
+                                        [mask-image:linear-gradient(135deg,black_0%,transparent_70%)]`
+                                        : ""
+                                }
+                                ${dogImageOpacityClassName}
                             `}
                             alt={`${value.value} dog`}
                         />
@@ -92,8 +108,9 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
                     <ButtonText
                         className={`text-2xl font-medium
                             ${value.value === null ? "invisible" : ""}
-                            ${value.isClue ? "text-gray-950" : "text-blue-500 data-[hover=true]:text-blue-500"}
-                            ${!isCorrect ? "text-red-500 data-[hover=true]:text-red-500" : ""}
+                            ${value.isClue ? "text-gray-950" : "text-blue-700 data-[hover=true]:text-blue-700"}
+                            ${isCorrect === false ? "text-red-500 data-[hover=true]:text-red-500" : ""}
+                            ${featureFlags.onlyDogs ? "invisible" : ""}
                         `}
                         size={value.isClue ? "md" : "sm"}
                         data-hover={false}
@@ -102,7 +119,7 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
                     </ButtonText>
                 </Button>
             </ButtonGroup>
-            {value.value === null && featureFlags.notes && <TileNotes notes={value.notes} />}
+            {value.value === null && featureFlags.notes && !featureFlags.onlyDogs && <TileNotes notes={value.notes} />}
         </Box>
     )
 }

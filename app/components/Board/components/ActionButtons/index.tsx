@@ -44,7 +44,7 @@ export default function ActionButtons() {
                 onPress={handleClearSelectedTile}
                 text="Clear"
             />
-            {featureFlags.notes && (
+            {featureFlags.notes && !featureFlags.onlyDogs && (
                 <ActionButton
                     icon={isAddingNotes ? Pencil : PencilOff}
                     onPress={handleToggleNotesMode}
