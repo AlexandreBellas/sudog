@@ -52,7 +52,7 @@ export default function Index() {
 
     return (
         <Box
-            className="flex flex-row w-full justify-center px-1 pt-1 sm:pt-4 sm:px-0 overflow-hidden h-dvh z-10
+            className="flex flex-row w-full justify-center px-1 pt-2 sm:pt-4 sm:px-0 overflow-hidden h-dvh z-10
                 bg-blue-50"
         >
             {isFetchingSavedBoard ? (
