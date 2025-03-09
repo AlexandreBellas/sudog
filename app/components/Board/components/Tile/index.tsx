@@ -51,12 +51,12 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
         [selectedTilePosition, i, j, iBlock, jBlock]
     )
     const bgClassName = useMemo(() => {
-        if (tileState === "selected") return "bg-blue-500/80"
+        if (tileState === "selected") return value.value ? "bg-blue-500/80" : "bg-blue-300"
         if (tileState === "indirectly-selected") return "bg-blue-200"
         if (isOnRowOrColumnOrGridOfSelected) return "bg-blue-100"
 
         return null
-    }, [tileState, isOnRowOrColumnOrGridOfSelected])
+    }, [tileState, isOnRowOrColumnOrGridOfSelected, value.value])
 
     const isHighlighted = useMemo(() => tileState === "selected" || tileState === "indirectly-selected", [tileState])
 
@@ -90,8 +90,7 @@ export default function Tile({ correctValue, value, i, j }: Readonly<ITileProps>
                         />
                     )}
                     <ButtonText
-                        className={`
-                            text-2xl font-medium
+                        className={`text-2xl font-medium
                             ${value.value === null ? "invisible" : ""}
                             ${value.isClue ? "text-gray-950" : "text-blue-500 data-[hover=true]:text-blue-500"}
                             ${!isCorrect ? "text-red-500 data-[hover=true]:text-red-500" : ""}
