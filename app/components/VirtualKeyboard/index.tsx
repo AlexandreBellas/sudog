@@ -30,13 +30,14 @@ export default function VirtualKeyboard() {
     // #endregion
 
     return (
-        <div className="flex-none flex gap-1 justify-center overflow-hidden pb-1">
+        <div className="flex-none flex gap-1 justify-center overflow-hidden pb-1 w-full flex-nowrap">
             {Array.from({ length: 9 }, (_, index) => index + 1).map((number) => (
                 <Button
                     key={number}
                     onPress={() => handlePlaceNumberForSelectedTile(number)}
-                    className="bg-blue-100 text-blue-500 px-2 sm:aspect-square border-[1px]
-                        border-blue-500
+                    className="flex-initial border-[1px] min-h-0 min-w-0 w-auto aspect-square px-0
+                        grow shrink basis-0
+                        bg-blue-100 text-blue-500 border-blue-500
                         disabled:bg-gray-200 disabled:text-gray-500 disabled:border-gray-200
                         data-[hover=true]:bg-blue-200 data-[hover=true]:text-blue-600
                         data-[active=true]:bg-blue-300 data-[active=true]:text-blue-700"

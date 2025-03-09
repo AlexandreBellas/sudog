@@ -13,7 +13,7 @@ export default function ActionButton({ icon, text, onPress }: Readonly<IActionBu
             <Button
                 size="lg"
                 onPress={onPress}
-                className="hidden md:flex flex-col px-2 bg-white data-[hover=true]:bg-white/80"
+                className="hidden xs:flex flex-col px-2 bg-white data-[hover=true]:bg-white/80"
             >
                 <ButtonIcon
                     as={icon}
@@ -24,22 +24,19 @@ export default function ActionButton({ icon, text, onPress }: Readonly<IActionBu
             <Button
                 size="md"
                 onPress={onPress}
-                className="hidden xs:flex md:hidden flex-row px-2 bg-white data-[hover=true]:bg-white/80"
+                className="flex xs:hidden flex-row px-2 shrink grow basis-0 min-w-0 min-h-0 w-auto
+                    bg-white data-[hover=true]:bg-white/80"
             >
                 <ButtonIcon
                     as={icon}
                     size="md"
                 />
-            </Button>
-            <Button
-                size="sm"
-                onPress={onPress}
-                className="flex xs:hidden flex-row px-2 bg-white data-[hover=true]:bg-white/80"
-            >
-                <ButtonIcon
-                    as={icon}
+                <ButtonText
                     size="sm"
-                />
+                    className="text-center"
+                >
+                    {text}
+                </ButtonText>
             </Button>
         </Fragment>
     )
