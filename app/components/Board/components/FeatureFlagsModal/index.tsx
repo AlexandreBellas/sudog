@@ -11,10 +11,10 @@ import {
     ModalFooter,
     ModalHeader
 } from "@/components/ui/modal"
-import { Switch } from "@/components/ui/switch"
 import { Text } from "@/components/ui/text"
 import { useGame, useGameDispatch } from "@/contexts/GameProvider"
 import { useCallback } from "react"
+import FeatureFlagSwitch from "./components/FeatureFlagSwitch"
 
 interface IFeatureFlagsModalProps {
     showModal: boolean
@@ -32,7 +32,22 @@ export default function FeatureFlagsModal({ showModal, setShowModal }: Readonly<
     // #region Callbacks
     const handleToggleFeatureFlag = useCallback(
         (featureFlag: IFeatureFlag) => {
-            gameDispatch({ type: "set-feature-flag", payload: { featureFlag, value: !featureFlags[featureFlag] } })
+            const newValue = !featureFlags[featureFlag]
+            gameDispatch({ type: "set-feature-flag", payload: { featureFlag, value: newValue } })
+
+            if (!newValue) {
+                featureFlagsDetails[featureFlag].dependencies.forEach((dependency) => {
+                    if (featureFlags[dependency]) {
+                        gameDispatch({
+                            type: "set-feature-flag",
+                            payload: {
+                                featureFlag: dependency,
+                                value: false
+                            }
+                        })
+                    }
+                })
+            }
         },
         [featureFlags, gameDispatch]
     )
@@ -66,20 +81,13 @@ export default function FeatureFlagsModal({ showModal, setShowModal }: Readonly<
                 <ModalBody>
                     <Box className="flex flex-col gap-1">
                         {Object.entries(featureFlags).map(([featureFlag, value]) => (
-                            <Box
+                            <FeatureFlagSwitch
                                 key={featureFlag}
-                                className="flex flex-row items-center gap-2"
-                            >
-                                <Switch
-                                    size="sm"
-                                    value={value}
-                                    onToggle={() => handleToggleFeatureFlag(featureFlag as IFeatureFlag)}
-                                    isDisabled={featureFlagsDetails[featureFlag as IFeatureFlag]?.dependencies.some(
-                                        (dependency) => !featureFlags[dependency]
-                                    )}
-                                />
-                                <Text>{featureFlagsDetails[featureFlag as IFeatureFlag].label}</Text>
-                            </Box>
+                                featureFlags={featureFlags}
+                                featureFlag={featureFlag as IFeatureFlag}
+                                value={value}
+                                onToggle={handleToggleFeatureFlag}
+                            />
                         ))}
                     </Box>
                 </ModalBody>

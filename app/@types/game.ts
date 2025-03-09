@@ -11,8 +11,8 @@ export const featureFlagsDetails: {
     }
 } = {
     notes: { label: "Notes", dependencies: [], blockers: [], defaultValue: true },
-    dogs: { label: "Dogs", dependencies: [], blockers: [], defaultValue: true },
-    onlyDogs: { label: "Strictly and only dogs", dependencies: ["dogs"], blockers: ["notes"], defaultValue: false },
+    dogs: { label: "Dogs", dependencies: ["onlyDogs"], blockers: [], defaultValue: true },
+    onlyDogs: { label: "Strictly and only dogs", dependencies: [], blockers: ["notes"], defaultValue: false },
     errors: { label: "Errors", dependencies: [], blockers: [], defaultValue: true }
 }
 export type IFeatureFlag = (typeof featureFlags)[number]
